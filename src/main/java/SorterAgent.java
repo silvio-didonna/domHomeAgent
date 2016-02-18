@@ -23,21 +23,21 @@ public class SorterAgent extends Agent {
 	 * 
 	 */
 	private static final long serialVersionUID = -4019608168429702476L;
-/*	
+/*
 	protected void setup() {
 		DFAgentDescription dfd = new DFAgentDescription();
-        dfd.setName(getAID());
-        ServiceDescription sd = new ServiceDescription();
-        sd.setType("sorter");
-        sd.setName("Sorter");
-        dfd.addServices(sd);
-        try {
-            DFService.register(this, dfd);
-        } catch (FIPAException fe) {
-            fe.printStackTrace();
-        }
+		dfd.setName(getAID());
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType("sorter");
+		sd.setName("Sorter");
+		dfd.addServices(sd);
+		try {
+			DFService.register(this, dfd);
+		} catch (FIPAException fe) {
+			fe.printStackTrace();
+		}
 	}
-	
+
 	private class SortGatewayMessages extends OneShotBehaviour {
 
 
@@ -82,15 +82,15 @@ public class SorterAgent extends Agent {
 			super(a, msg, store);
 			// TODO Auto-generated constructor stub
 		}
-		
+
 		String chooseMessage(String messageFromGateway) {
-			
+
 		}
-		
+
 		String chooseReceiver(String messageFromGateway) {
-			
+
 		}
-		
+
 
 		// Since we don't know what message to send to the responder
 		// when we construct this AchieveREInitiator, we redefine this 
@@ -159,16 +159,31 @@ public class SorterAgent extends Agent {
 			getDataStore().put(notificationkey, notification);
 		}
 	}
-	
-	
+
 	protected void takeDown() {
-        // Deregister from the yellow pages
-        try {
-            DFService.deregister(this);
-        } catch (FIPAException fe) {
-            fe.printStackTrace();
-        }
-        System.out.println("SorterAgent " + getAID().getName() + " terminating.");
-    }
+		// Deregister from the yellow pages
+		try {
+			DFService.deregister(this);
+		} catch (FIPAException fe) {
+			fe.printStackTrace();
+		}
+		System.out.println("SorterAgent " + getAID().getName() + " terminating.");
+	}
+
+	public void Parameters(String mex) {
+		String SensorParam;
+		String RoomParam;
+		String ValueParam;
+
+		mex = mex.replace("set-", "");
+		String[] parts = mex.split("-");
+		SensorParam = parts[0];
+		RoomParam = parts[1];
+		ValueParam = parts[2];
+
+		System.out.println("parametro1 = " + SensorParam);
+		System.out.println("parametro2 = " + RoomParam);
+		System.out.println("parametro3 = " + ValueParam);
+	}
 */
 }
