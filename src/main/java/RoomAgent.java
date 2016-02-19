@@ -26,7 +26,6 @@ public class RoomAgent extends Agent {
 
     private float temperature;
     private int lumens;
-    private boolean door;
     private boolean motion;
     private boolean flame;
     private boolean laser;
