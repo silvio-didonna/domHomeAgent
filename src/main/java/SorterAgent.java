@@ -23,7 +23,10 @@ public class SorterAgent extends Agent {
 	 * 
 	 */
 	private static final long serialVersionUID = -4019608168429702476L;
-/*
+	
+	String messageFromGateway = "";
+	String messageToGateway = "";
+
 	protected void setup() {
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
@@ -36,6 +39,8 @@ public class SorterAgent extends Agent {
 		} catch (FIPAException fe) {
 			fe.printStackTrace();
 		}
+		
+		addBehaviour(new SortGatewayMessages());
 	}
 
 	private class SortGatewayMessages extends OneShotBehaviour {
@@ -51,7 +56,9 @@ public class SorterAgent extends Agent {
 				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
 					ACLMessage agree = request.createReply();
 					agree.setPerformative(ACLMessage.AGREE);
-
+					
+					messageFromGateway = request.getContent();
+					System.out.println(messageFromGateway);
 					return agree;
 
 				}
@@ -60,36 +67,132 @@ public class SorterAgent extends Agent {
 
 					ACLMessage inform = request.createReply();
 					inform.setPerformative(ACLMessage.INFORM);
-					inform.setContent(garageDoorStatus.toString());
+					inform.setContent(messageToGateway);
 					return inform;
 
 				}
 			};
-			arer.registerPrepareResultNotification(new SendToSerialAgent(myAgent, null));
+			arer.registerPrepareResultNotification(new SendToAgent(myAgent, null));
 			addBehaviour(arer);
 		}
 	}
 
 
-	private class SendToSerialAgent extends AchieveREInitiator {
+	private class SendToAgent extends AchieveREInitiator {
 
-		public SendToSerialAgent(Agent a, ACLMessage msg) {
+		public SendToAgent(Agent a, ACLMessage msg) {
 			super(a, msg);
 			// TODO Auto-generated constructor stub
 		}
 
-		public SendToSerialAgent(Agent a, ACLMessage msg, DataStore store) {
+		public SendToAgent(Agent a, ACLMessage msg, DataStore store) {
 			super(a, msg, store);
 			// TODO Auto-generated constructor stub
 		}
 
-		String chooseMessage(String messageFromGateway) {
-
-		}
-
 		String chooseReceiver(String messageFromGateway) {
+			String type;
+			String room;
+			String value;
 
+			String receiver;
+			receiver = "";
+
+			String msg = messageFromGateway;
+			msg = msg.replace("set-", "");
+			String[] parts = msg.split("-");
+			type = parts[0];
+			room = parts[1];
+			value = parts[2];
+
+			System.out.println("parametro1 = " + type);
+			System.out.println("parametro2 = " + room);
+			System.out.println("parametro3 = " + value);
+
+			switch(type) {
+			case "autoTemp":
+			case "temp":
+			case "window":
+			{
+				receiver="Gestore-Temperatura";
+				break;
+			}
+			case "security":
+			{
+				receiver="Antifurto";
+				break;
+			}
+			case "fireSystem":
+			{
+				receiver="Antincendio";
+				break;
+			}			
+			case "light":
+			case "shutter":
+			case "autoLightning":
+			case "lightning":
+			{
+				receiver="Gestore-Luci";
+				break;
+			}
+
+			case "garageDoor":
+			{
+				receiver="Garage"; // MODIFICARE
+				break;
+			}			
+			}
+			return receiver;
 		}
+/*
+		String chooseMessage(String messageFromGateway) {
+			String type;
+			String room;
+			String value;
+
+			String message;
+			
+
+			String msg = messageFromGateway;
+			msg = msg.replace("set-", "");
+			String[] parts = msg.split("-");
+			type = parts[0];
+			room = parts[1];
+			value = parts[2];
+
+			System.out.println("parametro1 = " + type);
+			System.out.println("parametro2 = " + room);
+			System.out.println("parametro3 = " + value);
+			
+			message = room;
+
+			switch(room) {
+			case "general":
+			{
+				break;
+			}
+			case "hall":
+			{
+				break;
+			}
+			case "room":
+			{
+				break;
+			}
+			case "bathroom":
+			{
+				break;
+			}
+			case "kitchen":
+			{
+				break;
+			}
+			}
+
+
+			return "";
+		}
+		*/
 
 
 		// Since we don't know what message to send to the responder
@@ -103,8 +206,8 @@ public class SorterAgent extends Agent {
 			//System.out.println("Agent "+getLocalName()+": Forward the request to "+responder.getName());
 			ACLMessage outgoingRequest = new ACLMessage(ACLMessage.REQUEST);
 			outgoingRequest.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
-			outgoingRequest.setContent("garage1\n");
-			outgoingRequest.addReceiver(new AID("Gestore-Seriale",AID.ISLOCALNAME));
+			outgoingRequest.setContent(messageFromGateway);
+			outgoingRequest.addReceiver(new AID(chooseReceiver(messageFromGateway),AID.ISLOCALNAME));
 			outgoingRequest.setReplyByDate(incomingRequest.getReplyByDate());
 			Vector v = new Vector(1);
 			v.addElement(outgoingRequest);
@@ -115,9 +218,9 @@ public class SorterAgent extends Agent {
 			String messageContenut=inform.getContent();
 			messageContenut=messageContenut.trim();
 			if (messageContenut!=null)
-				garageDoorStatus = Boolean.valueOf(messageContenut);
-			System.out.println("AgenteGarage::::"+garageDoorStatus);
-			storeNotification(ACLMessage.INFORM,garageDoorStatus.toString());
+				messageToGateway = messageContenut;
+			
+			storeNotification(ACLMessage.INFORM,messageToGateway);
 
 		}
 
@@ -142,10 +245,10 @@ public class SorterAgent extends Agent {
 
 		private void storeNotification(int performative, String message) {
 			if (performative == ACLMessage.INFORM) {
-				System.out.println("Agent "+getLocalName()+": brokerage successful");
+				//System.out.println("Agent "+getLocalName()+": brokerage successful");
 			}
 			else {
-				System.out.println("Agent "+getLocalName()+": brokerage failed");
+				//System.out.println("Agent "+getLocalName()+": brokerage failed");
 			}
 
 			// Retrieve the incoming request from the DataStore
@@ -170,20 +273,4 @@ public class SorterAgent extends Agent {
 		System.out.println("SorterAgent " + getAID().getName() + " terminating.");
 	}
 
-	public void Parameters(String mex) {
-		String SensorParam;
-		String RoomParam;
-		String ValueParam;
-
-		mex = mex.replace("set-", "");
-		String[] parts = mex.split("-");
-		SensorParam = parts[0];
-		RoomParam = parts[1];
-		ValueParam = parts[2];
-
-		System.out.println("parametro1 = " + SensorParam);
-		System.out.println("parametro2 = " + RoomParam);
-		System.out.println("parametro3 = " + ValueParam);
-	}
-*/
 }

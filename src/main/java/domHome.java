@@ -88,7 +88,7 @@ public class domHome {
         AgentController shutterAgent = cont.createNewAgent(shutterName, "light.ShutterAgent", inRoom);
         AgentController garageDoorAgent = cont.createNewAgent(garageDoorName, "security.GarageDoorAgent", null);
         AgentController buzzerAgent = cont.createNewAgent(buzzerName, "security.BuzzerAgent", null);
-        //AgentController sorterAgent = cont.createNewAgent(sorterName, "SorterAgent", null);
+        AgentController sorterAgent = cont.createNewAgent(sorterName, "SorterAgent", null);
         /*
          try {
          Thread.sleep(8000);
@@ -126,9 +126,8 @@ public class domHome {
         fireSystemAgent.start();
         antitheftAgent.start();
         
-        //test
-        AgentController Pong = cont.createNewAgent("PingJani", "internet.PongAgent", null);
-        Pong.start();
+        sorterAgent.start();
+
 
     }
 }
