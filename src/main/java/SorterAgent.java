@@ -113,6 +113,7 @@ public class SorterAgent extends Agent {
 			case "autoTemp":
 			case "temp":
 			case "window":
+			case "fan":
 			{
 				receiver="Gestore-Temperatura";
 				break;
