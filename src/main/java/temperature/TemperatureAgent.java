@@ -3,8 +3,6 @@ package temperature;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
@@ -33,7 +31,6 @@ public class TemperatureAgent extends Agent {
 	 */
 	private static final long serialVersionUID = 138736042772986486L;
 	private AID[] serverAgents;
-	//List<CurrentTemperatureInRoom> currentTemperatures = new LinkedList<CurrentTemperatureInRoom>();
 	Map <String,CurrentStatusInRoom> currentStatuses = new HashMap<String,CurrentStatusInRoom>();
 	String responseToSorter = "";
 	Boolean boilerOn = false;
