@@ -28,128 +28,120 @@ import jade.proto.AchieveREResponder;
 
 public class FireSystemAgent extends Agent {
 
-    private AID[] serverAgents;
-    //private static Map<AID, Float> currentTemperatures = new HashMap<>();
-    //List<CurrentFireStatusInRoom> currentFireStatuses = new LinkedList<CurrentFireStatusInRoom>();
+	private AID[] serverAgents;
+	//private static Map<AID, Float> currentTemperatures = new HashMap<>();
+	//List<CurrentFireStatusInRoom> currentFireStatuses = new LinkedList<CurrentFireStatusInRoom>();
 	Map <String,CurrentStatusInRoom> currentStatuses = new HashMap<String,CurrentStatusInRoom>();
 	String responseToSorter = "";
 	Boolean fireSystemOn=false;
 	Boolean buzzerStatus=false;
-	
-    protected void setup() {
-        DFAgentDescription dfd = new DFAgentDescription();
-        dfd.setName(getAID());
-        ServiceDescription sd = new ServiceDescription();
-        sd.setType("fire-system-manager");
-        sd.setName("JADE-fire-system");
-        dfd.addServices(sd);
-        try {
-            DFService.register(this, dfd);
-        } catch (FIPAException fe) {
-            fe.printStackTrace();
-        }
 
-        //ricerca agenti
-        DFAgentDescription template = new DFAgentDescription();
-        ServiceDescription sdRoom = new ServiceDescription();
-        sdRoom.setType("room-manager");
-        template.addServices(sdRoom);
-        try {
-            DFAgentDescription[] result = DFService.search(this, template);
-            //System.out.println("Found the following seller agents:");
-            serverAgents = new AID[result.length];
-            for (int i = 0; i < result.length; ++i) {
-                serverAgents[i] = result[i].getName();
-                CurrentStatusInRoom currentStatusInRoom = new CurrentStatusInRoom(serverAgents[i]);
+	protected void setup() {
+		DFAgentDescription dfd = new DFAgentDescription();
+		dfd.setName(getAID());
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType("fire-system-manager");
+		sd.setName("JADE-fire-system");
+		dfd.addServices(sd);
+		try {
+			DFService.register(this, dfd);
+		} catch (FIPAException fe) {
+			fe.printStackTrace();
+		}
+
+		//ricerca agenti
+		DFAgentDescription template = new DFAgentDescription();
+		ServiceDescription sdRoom = new ServiceDescription();
+		sdRoom.setType("room-manager");
+		template.addServices(sdRoom);
+		try {
+			DFAgentDescription[] result = DFService.search(this, template);
+			//System.out.println("Found the following seller agents:");
+			serverAgents = new AID[result.length];
+			for (int i = 0; i < result.length; ++i) {
+				serverAgents[i] = result[i].getName();
+				CurrentStatusInRoom currentStatusInRoom = new CurrentStatusInRoom(serverAgents[i]);
 				currentStatuses.put(serverAgents[i].getLocalName(), currentStatusInRoom);
 
-            }
-        } catch (FIPAException fe) {
-            fe.printStackTrace();
-        }
+			}
+		} catch (FIPAException fe) {
+			fe.printStackTrace();
+		}
 
-        addBehaviour(new RequestCurrentFireStatuses(this, 5000)); 
-        addBehaviour(new SetBuzzer(this, 5000));
-        addBehaviour(new FireSystemService());
-    }
+		addBehaviour(new RequestCurrentFireStatuses(this, 5000)); 
+		addBehaviour(new SetBuzzer(this, 5000));
+		addBehaviour(new FireSystemService());
+	}
 
-    private class RequestCurrentFireStatuses extends TickerBehaviour {
+	private class RequestCurrentFireStatuses extends TickerBehaviour {
 
-        private int nResponders;
+		private int nResponders;
 
-        public RequestCurrentFireStatuses(Agent a, long period) {
-            super(a, period);
-            // TODO Auto-generated constructor stub
-        }
+		public RequestCurrentFireStatuses(Agent a, long period) {
+			super(a, period);
+			// TODO Auto-generated constructor stub
+		}
 
-        @Override
-        protected void onTick() {
+		@Override
+		protected void onTick() {
 
-            ACLMessage requestFireStatusMessage = new ACLMessage(ACLMessage.REQUEST);
+			ACLMessage requestFireStatusMessage = new ACLMessage(ACLMessage.REQUEST);
 
-            for (int i = 0; i < serverAgents.length; ++i) {
-                requestFireStatusMessage.addReceiver(serverAgents[i]);
-            }
+			for (int i = 0; i < serverAgents.length; ++i) {
+				requestFireStatusMessage.addReceiver(serverAgents[i]);
+			}
 
-            requestFireStatusMessage.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
-            // We want to receive a reply in 10 secs
-            requestFireStatusMessage.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
-            requestFireStatusMessage.setContent("fuoco");
+			requestFireStatusMessage.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+			// We want to receive a reply in 10 secs
+			requestFireStatusMessage.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
+			requestFireStatusMessage.setContent("fuoco");
 
-            addBehaviour(new AchieveREInitiator(myAgent, requestFireStatusMessage) {
+			addBehaviour(new AchieveREInitiator(myAgent, requestFireStatusMessage) {
 
-                protected void handleInform(ACLMessage inform) {
-                    //System.out.println("Agent "+inform.getSender().getName()+" successfully performed the requested action");
-                    String messageContenut = inform.getContent();
-                    System.out.println("Agente Gestore-Fuoco::::" + messageContenut);
-                    if (messageContenut != null) {
-                        try {
+				protected void handleInform(ACLMessage inform) {
+					//System.out.println("Agent "+inform.getSender().getName()+" successfully performed the requested action");
+					String messageContenut = inform.getContent();
+					System.out.println("Agente Gestore-Fuoco::::" + messageContenut);
+					if (messageContenut != null) {
+						try {
 
-                            Boolean fireStatus = Boolean.valueOf(inform.getContent());
-                                
-                                Set<String> rooms = currentStatuses.keySet();
-                    			Iterator <String> roomIterator = rooms.iterator();
-                    			while(roomIterator.hasNext()) {
-                    				String roomName = roomIterator.next();
-                                //System.out.println(currentTemperatureInRoom.getroomAgent().getName() + " " + msg.getSender().getName());
-                                if (currentStatuses.get(roomName).getRoomAgent().getName().equals(inform.getSender().getName())) {
-                                	currentStatuses.get(roomName).setCurrentFireStatus(fireStatus);
-                                }
-                            }
+							Boolean fireStatus = Boolean.valueOf(inform.getContent());
 
-                        } catch (NumberFormatException e) {
-                            System.out.println("Agente Gestore-Fuoco::::errore");
-                        }
-                    }
-                }
+							currentStatuses.get(inform.getSender().getLocalName()).setCurrentFireStatus(fireStatus);
 
-                protected void handleRefuse(ACLMessage refuse) {
-                    System.out.println("Agent " + refuse.getSender().getName() + " refused to perform the requested action");
-                    nResponders--;
-                }
+						} catch (NumberFormatException e) {
+							System.out.println("Agente Gestore-Fuoco::::errore");
+						}
+					}
+				}
 
-                protected void handleFailure(ACLMessage failure) {
-                    if (failure.getSender().equals(myAgent.getAMS())) {
-                        // FAILURE notification from the JADE runtime: the receiver
-                        // does not exist
-                        System.out.println("Responder does not exist");
-                    } else {
-                        System.out.println("Agent " + failure.getSender().getName() + " failed to perform the requested action");
-                    }
-                }
+				protected void handleRefuse(ACLMessage refuse) {
+					System.out.println("Agent " + refuse.getSender().getName() + " refused to perform the requested action");
+					nResponders--;
+				}
 
-                protected void handleAllResultNotifications(Vector notifications) {
-                    if (notifications.size() < nResponders) {
-                        // Some responder didn't reply within the specified timeout
-                        System.out.println("Timeout expired: missing " + (nResponders - notifications.size()) + " responses");
-                    }
-                }
-            });
+				protected void handleFailure(ACLMessage failure) {
+					if (failure.getSender().equals(myAgent.getAMS())) {
+						// FAILURE notification from the JADE runtime: the receiver
+						// does not exist
+						System.out.println("Responder does not exist");
+					} else {
+						System.out.println("Agent " + failure.getSender().getName() + " failed to perform the requested action");
+					}
+				}
 
-        }
-    }
-    
-    private class SetBuzzer extends TickerBehaviour {
+				protected void handleAllResultNotifications(Vector notifications) {
+					if (notifications.size() < nResponders) {
+						// Some responder didn't reply within the specified timeout
+						System.out.println("Timeout expired: missing " + (nResponders - notifications.size()) + " responses");
+					}
+				}
+			});
+
+		}
+	}
+
+	private class SetBuzzer extends TickerBehaviour {
 		private int nResponders;
 
 		public SetBuzzer(Agent a, long period) {
@@ -190,7 +182,7 @@ public class FireSystemAgent extends Agent {
 					if (currentStatuses.get(roomName).getCurrentFireStatus()) { //se c'e' un incendio
 						if(!buzzerStatus)
 							requestBuzzerToggle.setContent("true");
-					//se non c'e'
+						//se non c'e'
 					} else if(buzzerStatus)
 						requestBuzzerToggle.setContent("false");
 				}
@@ -243,7 +235,7 @@ public class FireSystemAgent extends Agent {
 			}
 		}
 	}
-    
+
 	private class FireSystemService extends OneShotBehaviour {
 
 		/**
@@ -321,46 +313,46 @@ public class FireSystemAgent extends Agent {
 
 	}
 
-    private class CurrentStatusInRoom {
+	private class CurrentStatusInRoom {
 
-        private Boolean currentFireStatus;
-        private AID roomAgent;
+		private Boolean currentFireStatus;
+		private AID roomAgent;
 
-        public CurrentStatusInRoom() {
-            setCurrentFireStatus(null);
-            setRoomAgent(null);
-        }
+		public CurrentStatusInRoom() {
+			setCurrentFireStatus(null);
+			setRoomAgent(null);
+		}
 
-        public CurrentStatusInRoom(AID roomAgent) {
-            setCurrentFireStatus(null);
-            setRoomAgent(roomAgent);
-        }
+		public CurrentStatusInRoom(AID roomAgent) {
+			setCurrentFireStatus(null);
+			setRoomAgent(roomAgent);
+		}
 
-        public Boolean getCurrentFireStatus() {
-            return currentFireStatus;
-        }
+		public Boolean getCurrentFireStatus() {
+			return currentFireStatus;
+		}
 
-        public void setCurrentFireStatus(Boolean currentFireStatus) {
-            this.currentFireStatus = currentFireStatus;
-        }
+		public void setCurrentFireStatus(Boolean currentFireStatus) {
+			this.currentFireStatus = currentFireStatus;
+		}
 
-        public AID getRoomAgent() {
-            return roomAgent;
-        }
+		public AID getRoomAgent() {
+			return roomAgent;
+		}
 
-        public void setRoomAgent(AID roomAgent) {
-            this.roomAgent = roomAgent;
-        }
+		public void setRoomAgent(AID roomAgent) {
+			this.roomAgent = roomAgent;
+		}
 
-    }
+	}
 
-    protected void takeDown() {
-        // Deregister from the yellow pages
-        try {
-            DFService.deregister(this);
-        } catch (FIPAException fe) {
-            fe.printStackTrace();
-        }
-        System.out.println("FireSystemAgent " + getAID().getName() + " terminating.");
-    }
+	protected void takeDown() {
+		// Deregister from the yellow pages
+		try {
+			DFService.deregister(this);
+		} catch (FIPAException fe) {
+			fe.printStackTrace();
+		}
+		System.out.println("FireSystemAgent " + getAID().getName() + " terminating.");
+	}
 }
