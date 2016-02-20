@@ -9,7 +9,7 @@ public class domHome {
     static String thermometerName = "Termometro";
     static String fanName = "Ventilatore";
     static String temperatureName = "Gestore-Temperatura";
-    static String roomName = "Gestore-Salone";
+    static String roomName = "hall";
     static String serialCommName = "Gestore-Seriale";
     static String lightSensorName = "Sensore-Luci";
     static String lightningName = "Gestore-Luci";

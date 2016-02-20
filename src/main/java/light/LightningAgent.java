@@ -407,7 +407,7 @@ public class LightningAgent extends Agent {
 		
 		Boolean makeAction(String messageFromGateway) {
 			String type;
-			String room; String roomAgentName="";
+			String room;
 			String value;
 
 
@@ -418,45 +418,20 @@ public class LightningAgent extends Agent {
 			room = parts[1];
 			value = parts[2];
 
-			switch(room) {
-			//case "general":
-			//{
-			//	break;
-			//}
-			case "hall":
-			{
-				roomAgentName="Gestore-Salone";
-				break;
-			}
-			case "room":
-			{
-				break;
-			}
-			case "bathroom":
-			{
-				break;
-			}
-			case "kitchen":
-			{
-				break;
-			}
-			}
-
 			switch(type) {
 			case "light":
-				Boolean lightOn = !(currentStatuses.get(roomAgentName).getlightStatus());
-				currentStatuses.get(roomAgentName).setLightOn(lightOn);
+				Boolean lightOn = !(currentStatuses.get(room).getlightStatus());
+				currentStatuses.get(room).setLightOn(lightOn);
 				responseToSorter = lightOn.toString();
 				break;
 			case "autoLightning":
-				Boolean autoLight = !(currentStatuses.get(roomAgentName).getAutoLight());
-				currentStatuses.get(roomAgentName).setAutoLight(autoLight);
+				Boolean autoLight = !(currentStatuses.get(room).getAutoLight());
+				currentStatuses.get(room).setAutoLight(autoLight);
 				responseToSorter = autoLight.toString();
-				System.out.println("PROVA " + currentStatuses.get(roomAgentName).getAutoLight());
 				break;
 			case "lightning":
 				int valueInt = Integer.parseInt(value.trim());
-				currentStatuses.get(roomAgentName).setLumenLevel(valueInt);
+				currentStatuses.get(room).setLumenLevel(valueInt);
 				responseToSorter = Integer.toString(valueInt);
 				break;
 			}

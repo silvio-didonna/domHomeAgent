@@ -258,7 +258,7 @@ public class RoomAgent extends Agent {
 
                 protected void handleInform(ACLMessage inform) {
                     String messageContenut = inform.getContent();
-                    //System.out.println("AgenteGestore-Salone::::"+messageContenut);
+                    //System.out.println("Agentehall::::"+messageContenut);
                     if (messageContenut != null) {
                         lumens = Integer.parseInt(messageContenut);
                         //System.out.println("Room-Lumen::::" + messageContenut);
