@@ -217,16 +217,33 @@ public class LightningAgent extends Agent {
 				requestLightToggle.addReceiver(lightAgents[0]); // da modificare----------------------
 				//System.out.println("setLight:::: " + currentLumenInRoom.getCurrentLumen());
 				requestLightToggle.setContent(""); // per far funzionare l'IF dopo
-				if (!currentStatuses.get(roomName).getlightStatus()) {
-					if ((currentStatuses.get(roomName).getCurrentLumen() < lumenMinValue)) {
+				if (currentStatuses.get(roomName).getAutoLight()) { //se e' attiva la gestione automatica
+					if (!currentStatuses.get(roomName).getlightStatus()) {//se e' spenta
+						if (currentStatuses.get(roomName).getCurrentLumen() < (currentStatuses.get(roomName).getLumenLevel())*100) {
 
-						requestLightToggle.setContent("true");
+							requestLightToggle.setContent("true");
 
+						}
+					//se e' accesa
+					} else if (currentStatuses.get(roomName).getCurrentLumen() > (currentStatuses.get(roomName).getLumenLevel())*100) {
+
+						requestLightToggle.setContent("false");
 					}
-				} else if ((currentStatuses.get(roomName).getCurrentLumen() > lumenMinValue)) {
-
-					requestLightToggle.setContent("false");
 				}
+				else { //se non e' attiva la gestione automatica
+					if (!currentStatuses.get(roomName).getlightStatus()) {
+						if (currentStatuses.get(roomName).getLightOn()) {
+
+							requestLightToggle.setContent("true");
+
+						}
+					} else if (!currentStatuses.get(roomName).getLightOn()) {
+
+						requestLightToggle.setContent("false");
+					}
+					
+				}
+
 
 				if (requestLightToggle.getContent().equalsIgnoreCase("true") || requestLightToggle.getContent().equalsIgnoreCase("false")) {
 
@@ -427,14 +444,15 @@ public class LightningAgent extends Agent {
 
 			switch(type) {
 			case "light":
-				Boolean lightStatus = !(currentStatuses.get(roomAgentName).getlightStatus());
-				currentStatuses.get(roomAgentName).setlightStatus(lightStatus);
-				responseToSorter = lightStatus.toString();
+				Boolean lightOn = !(currentStatuses.get(roomAgentName).getlightStatus());
+				currentStatuses.get(roomAgentName).setLightOn(lightOn);
+				responseToSorter = lightOn.toString();
 				break;
 			case "autoLightning":
 				Boolean autoLight = !(currentStatuses.get(roomAgentName).getAutoLight());
 				currentStatuses.get(roomAgentName).setAutoLight(autoLight);
 				responseToSorter = autoLight.toString();
+				System.out.println("PROVA " + currentStatuses.get(roomAgentName).getAutoLight());
 				break;
 			case "lightning":
 				int valueInt = Integer.parseInt(value.trim());
