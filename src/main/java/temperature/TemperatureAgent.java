@@ -11,14 +11,20 @@ import java.util.Vector;
 
 import jade.core.AID;
 import jade.core.Agent;
+import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.FailureException;
+import jade.domain.FIPAAgentManagement.NotUnderstoodException;
+import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import jade.proto.AchieveREInitiator;
+import jade.proto.AchieveREResponder;
 
 public class TemperatureAgent extends Agent {
 
@@ -29,7 +35,10 @@ public class TemperatureAgent extends Agent {
 	private AID[] serverAgents;
 	//List<CurrentTemperatureInRoom> currentTemperatures = new LinkedList<CurrentTemperatureInRoom>();
 	Map <String,CurrentStatusInRoom> currentStatuses = new HashMap<String,CurrentStatusInRoom>();
+	String responseToSorter = "";
 	Boolean boilerOn = false;
+	Boolean autoTemperature = false;
+	int temperatureLevel = 20;
 
 	protected void setup() {
 
@@ -67,6 +76,7 @@ public class TemperatureAgent extends Agent {
 		addBehaviour(new SetFan(this, 6000));
 		addBehaviour(new SetWindow(this, 6000));
 		addBehaviour(new SetBoiler(this, 6000));
+		addBehaviour(new TemperatureService());
 
 	}
 
@@ -160,7 +170,7 @@ public class TemperatureAgent extends Agent {
 		@Override
 		protected void onTick() {
 
-			Float tempMaxValue = new Float(20);
+			//Float tempMaxValue = new Float(20);
 			Set<String> rooms = currentStatuses.keySet();
 			Iterator <String> roomIterator = rooms.iterator();
 			while(roomIterator.hasNext()) {
@@ -194,16 +204,34 @@ public class TemperatureAgent extends Agent {
 
 				//System.out.println("setFan:::: " + currentTemperatureInRoom.getCurrentTemperature());
 				requestFanToggle.setContent(""); // per far funzionare l'IF dopo
-				if (!currentStatuses.get(roomName).getfanOn()) {
-					if ((currentStatuses.get(roomName).getCurrentTemperature() != null) && ((currentStatuses.get(roomName).getCurrentTemperature().compareTo(tempMaxValue) > 0))) {
+				if (autoTemperature) { //se e' attiva la gestione automatica
+					if (!currentStatuses.get(roomName).getFanStatus()) {
+						if ((currentStatuses.get(roomName).getCurrentTemperature() != null) && ((currentStatuses.get(roomName).getCurrentTemperature().compareTo((float)temperatureLevel) > 0))) {
 
-						requestFanToggle.setContent("true"); //accendi
+							requestFanToggle.setContent("true"); //accendi
+						}
+					} else if ((currentStatuses.get(roomName).getCurrentTemperature() != null) && ((currentStatuses.get(roomName).getCurrentTemperature().compareTo((float)temperatureLevel) < 0))) {
 
+						requestFanToggle.setContent("false"); //spegni
 					}
-				} else if ((currentStatuses.get(roomName).getCurrentTemperature() != null) && ((currentStatuses.get(roomName).getCurrentTemperature().compareTo(tempMaxValue) < 0))) {
+				} 
+				else 
+				{ //se non è attiva la gestione automatica
+					if (!currentStatuses.get(roomName).getFanStatus()) 
+					{
+						if (currentStatuses.get(roomName).getFanOn()) 
+						{
 
-					requestFanToggle.setContent("false"); //spegni
+						requestFanToggle.setContent("true");
+
+						}
+					} else if (!currentStatuses.get(roomName).getFanOn()) 
+					{
+						requestFanToggle.setContent("false");
+					}
 				}
+
+				
 
 				if (requestFanToggle.getContent().equalsIgnoreCase("true") || requestFanToggle.getContent().equalsIgnoreCase("false")) {
 
@@ -221,7 +249,7 @@ public class TemperatureAgent extends Agent {
 
 						protected void handleInform(ACLMessage inform) {
 							System.out.println("Agent " + inform.getSender().getName() + " send" + inform.getContent());
-							currentStatuses.get(roomName).setfanOn(Boolean.valueOf(inform.getContent()));
+							currentStatuses.get(roomName).setFanStatus(Boolean.valueOf(inform.getContent()));
 						}
 
 						protected void handleAgree(ACLMessage agree) {
@@ -271,7 +299,7 @@ public class TemperatureAgent extends Agent {
 		@Override
 		protected void onTick() {
 
-			Float tempMaxValue = new Float(20);
+			//Float tempMaxValue = new Float(20);
 			//for (CurrentTemperatureInRoom currentTemperatureInRoom : currentTemperatures) { // per ogni stanza
 			Set<String> rooms = currentStatuses.keySet();
 			Iterator <String> roomIterator = rooms.iterator();
@@ -304,15 +332,35 @@ public class TemperatureAgent extends Agent {
 
 				//System.out.println("setWindow:::: " + currentTemperatureInRoom.getCurrentTemperature());
 				requestWindowToggle.setContent(""); // per far funzionare l'IF dopo
-				if (!currentStatuses.get(roomName).getfanOn()) {
-					if ((currentStatuses.get(roomName).getCurrentTemperature() != null) && ((currentStatuses.get(roomName).getCurrentTemperature().compareTo(tempMaxValue) > 0))) {
-
-						requestWindowToggle.setContent("true"); //accendi
+				if (autoTemperature) //se e' attiva la gestione automatica
+				{ 
+					if (!currentStatuses.get(roomName).getWindowStatus()) 
+					{
+						if ((currentStatuses.get(roomName).getCurrentTemperature() != null) && ((currentStatuses.get(roomName).getCurrentTemperature().compareTo((float)temperatureLevel) > 0))) 
+						{
+							System.out.println("CURRTEMP " + currentStatuses.get(roomName).getCurrentTemperature());
+							System.out.println("TEMPERATURELEVEL " + (float)temperatureLevel);
+							requestWindowToggle.setContent("true"); //accendi
+						}
 
 					}
-				} else if ((currentStatuses.get(roomName).getCurrentTemperature() != null) && ((currentStatuses.get(roomName).getCurrentTemperature().compareTo(tempMaxValue) < 0))) {
+					else if ((currentStatuses.get(roomName).getCurrentTemperature() != null) && ((currentStatuses.get(roomName).getCurrentTemperature().compareTo((float)temperatureLevel) < 0))) 
+					{
+						requestWindowToggle.setContent("false"); //spegni
+					}
+				}
+				else //se non è attiva la gestione automatica
+				{
+					if (!currentStatuses.get(roomName).getWindowStatus()) {
+						if (currentStatuses.get(roomName).getWindowOpen()) {
 
-					requestWindowToggle.setContent("false"); //spegni
+							requestWindowToggle.setContent("true");
+
+						}
+					} else if (!currentStatuses.get(roomName).getWindowOpen()) {
+
+						requestWindowToggle.setContent("false");
+					}
 				}
 
 				if (requestWindowToggle.getContent().equalsIgnoreCase("true") || requestWindowToggle.getContent().equalsIgnoreCase("false")) {
@@ -331,7 +379,7 @@ public class TemperatureAgent extends Agent {
 
 						protected void handleInform(ACLMessage inform) {
 							System.out.println("Agent " + inform.getSender().getName() + " send" + inform.getContent());
-							currentStatuses.get(roomName).setfanOn(Boolean.valueOf(inform.getContent())); //DA MODIFICARE
+							currentStatuses.get(roomName).setWindowStatus(Boolean.valueOf(inform.getContent())); //DA MODIFICARE
 						}
 
 						protected void handleAgree(ACLMessage agree) {
@@ -377,7 +425,7 @@ public class TemperatureAgent extends Agent {
 		@Override
 		protected void onTick() {
 
-			Float tempMinValue = new Float(20);
+			//Float tempMinValue = new Float(20);
 			Float averageTemp = new Float(0);
 			//for (CurrentTemperatureInRoom currentTemperatureInRoom : currentTemperatures) { // per ogni stanza
 			Set<String> rooms = currentStatuses.keySet();
@@ -416,15 +464,36 @@ public class TemperatureAgent extends Agent {
 
 			//System.out.println("setWindow:::: " + currentTemperatureInRoom.getCurrentTemperature());
 			requestBoilerToggle.setContent(""); // per far funzionare l'IF dopo
-			if (!boilerOn) {
-				if (averageTemp.compareTo(tempMinValue) < 0) {
-
-					requestBoilerToggle.setContent("true"); //accendi
-
+			if (autoTemperature) //se e' attiva la gestione automatica
+			{ 
+				if (!boilerOn) 
+				{
+					if (averageTemp.compareTo((float)temperatureLevel) < 0) 
+					{
+						requestBoilerToggle.setContent("true"); //accendi
+					}
+				
+				} 
+				else if (averageTemp.compareTo((float)temperatureLevel) > 0) 
+				{
+					requestBoilerToggle.setContent("false"); //spegni
 				}
-			} else if (averageTemp.compareTo(tempMinValue) > 0) {
-
-				requestBoilerToggle.setContent("false"); //spegni
+			}
+			else //se non e' attiva la gestione automatica
+			{
+				
+				if (boilerOn) 
+				{
+					requestBoilerToggle.setContent("false");
+				}
+				/*
+				else
+				{
+				
+					requestBoilerToggle.setContent("true");
+				}
+				*/
+				
 			}
 
 			if (requestBoilerToggle.getContent().equalsIgnoreCase("true") || requestBoilerToggle.getContent().equalsIgnoreCase("false")) {
@@ -471,63 +540,199 @@ public class TemperatureAgent extends Agent {
 			}
 		}
 	}
+	
+	private class TemperatureService extends OneShotBehaviour {
 
-	private class CurrentStatusInRoom {
 
-		private Float currentTemperature;
-		private AID roomAgent;
-		private Boolean fanOn; // manca window
+		
+		Boolean makeAction(String messageFromGateway) {
+			String type;
+			String room;
+			String value;
 
-		public CurrentStatusInRoom() {
-			currentTemperature = null;
-			roomAgent = null;
-			fanOn = false;
+
+			String msg = messageFromGateway;
+			msg = msg.replace("set-", "");
+			String[] parts = msg.split("-");
+			type = parts[0];
+			room = parts[1];
+			value = parts[2];
+
+			switch(type) {
+			case "fan":
+				Boolean fanOn = !(currentStatuses.get(room).getFanStatus());
+				currentStatuses.get(room).setFanOn(fanOn);
+				responseToSorter = fanOn.toString();
+				break;
+			case "autoTemp":
+				autoTemperature = !(autoTemperature);
+				responseToSorter = autoTemperature.toString();
+				break;
+			case "temp":
+				temperatureLevel = Integer.parseInt(value.trim());
+				responseToSorter = Integer.toString(temperatureLevel);
+				break;
+			case "window":
+				Boolean windowOpen = !(currentStatuses.get(room).getWindowStatus());
+				currentStatuses.get(room).setWindowOpen(windowOpen);
+				responseToSorter = windowOpen.toString();
+				break;
+			}
+
+
+			return true;
+		}
+		
+		@Override
+		public void action() {
+
+			MessageTemplate template = MessageTemplate.and(
+					MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
+					MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
+
+			addBehaviour(new AchieveREResponder(myAgent, template) {
+
+
+				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
+					//    if (request.getContent().equalsIgnoreCase("lumen") && currentLumen >= 0) {
+					// We agree to perform the action.
+
+					makeAction(request.getContent());
+					ACLMessage agree = request.createReply();
+					agree.setPerformative(ACLMessage.AGREE);
+					return agree;
+					//    } else {
+					// We refuse to perform the action
+					//        throw new RefuseException("Message content not supported or corrupted value");
+					//    }
+				}
+
+				protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {
+
+
+					ACLMessage inform = request.createReply();
+					inform.setPerformative(ACLMessage.INFORM);
+
+					inform.setContent(responseToSorter);
+
+					return inform;
+
+				}
+			});
+
 		}
 
-		public CurrentStatusInRoom(AID roomAgent) {
-			setCurrentTemperature(null);
-			setroomAgent(roomAgent);
-			fanOn = false;
-		}
-
-		public CurrentStatusInRoom(AID roomAgent, Float currentTemperature) {
-			setCurrentTemperature(currentTemperature);
-			setroomAgent(roomAgent);
-			fanOn = false;
-		}
-
-		public Float getCurrentTemperature() {
-			return currentTemperature;
-		}
-
-		public void setCurrentTemperature(Float currentTemperature) {
-			this.currentTemperature = currentTemperature;
-		}
-
-		public AID getroomAgent() {
-			return roomAgent;
-		}
-
-		public void setroomAgent(AID roomAgent) {
-			this.roomAgent = roomAgent;
-		}
-
-		public Boolean getfanOn() {
-			return fanOn;
-		}
-
-		public void setfanOn(Boolean fanOn) {
-			this.fanOn = fanOn;
-		}
 	}
 
-	protected void takeDown() {
-		// Deregister from the yellow pages
-		try {
-			DFService.deregister(this);
-		} catch (FIPAException fe) {
-			fe.printStackTrace();
-		}
-		System.out.println("TemperatureAgent " + getAID().getName() + " terminating.");
-	}
+    
+    private class CurrentStatusInRoom {
+
+        private Float currentTemperature;
+        private AID roomAgent;
+        private Boolean fanOn; 
+        private Boolean fanStatus;
+        private Boolean windowOpen;
+        private Boolean windowStatus;
+        
+
+        public CurrentStatusInRoom() {
+        	setCurrentTemperature(null);
+            setRoomAgent(null);
+            setFanOn(false);
+            setFanStatus(false);
+            setWindowOpen(false);
+            setWindowStatus(false);
+        }
+
+        public CurrentStatusInRoom(AID roomAgent) {
+            setCurrentTemperature(null);
+            setRoomAgent(roomAgent);
+            setFanOn(false);
+            setFanStatus(false);
+            setWindowOpen(false);
+            setWindowStatus(false);
+        }
+
+        public Float getCurrentTemperature() {
+            return currentTemperature;
+        }
+
+        public void setCurrentTemperature(Float currentTemperature) {
+            this.currentTemperature = currentTemperature;
+        }
+        
+        /*public Boolean getAutoTemperature() {
+            return autoTemperature;
+        }
+
+        public void setAutoTemperature(Boolean autoTemperature) {
+            this.autoTemperature = autoTemperature;
+        }
+        
+        public int getTemperatureLevel()
+        {
+        	return temperatureLevel;
+        }
+        
+        public void setTemperatureLevel(int temperatureLevel)
+        {
+        	this.temperatureLevel = temperatureLevel;
+        }*/
+
+        public AID getRoomAgent() {
+            return roomAgent;
+        }
+
+        public void setRoomAgent(AID roomAgent) {
+            this.roomAgent = roomAgent;
+        }
+
+        public Boolean getFanOn() {
+            return fanOn;
+        }
+
+        public void setFanOn(Boolean fanOn) {
+            this.fanOn = fanOn;
+        }
+        
+        public Boolean getFanStatus()
+        {
+        	return fanStatus;
+        }
+        
+        public void setFanStatus(Boolean fanStatus)
+        {
+        	this.fanStatus = fanStatus;
+        }
+        
+        public Boolean getWindowOpen()
+        {
+        	return windowOpen;
+        }
+        
+        public void setWindowOpen(Boolean windowOpen)
+        {
+        	this.windowOpen = windowOpen;
+        }
+        
+        public Boolean getWindowStatus()
+        {
+        	return windowStatus;
+        }
+        
+        public void setWindowStatus(Boolean windowStatus)
+        {
+        	this.windowStatus = windowStatus;
+        }
+    }
+
+    protected void takeDown() {
+        // Deregister from the yellow pages
+        try {
+            DFService.deregister(this);
+        } catch (FIPAException fe) {
+            fe.printStackTrace();
+        }
+        System.out.println("TemperatureAgent " + getAID().getName() + " terminating.");
+    }
 }

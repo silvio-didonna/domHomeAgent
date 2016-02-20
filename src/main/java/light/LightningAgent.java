@@ -1,10 +1,9 @@
 package light;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
@@ -59,12 +58,9 @@ public class LightningAgent extends Agent {
 		template.addServices(sdRoom);
 		try {
 			DFAgentDescription[] result = DFService.search(this, template);
-			//System.out.println("Found the following server agents:");
 			serverAgents = new AID[result.length];
 			for (int i = 0; i < result.length; ++i) {
 				serverAgents[i] = result[i].getName();
-				//System.out.println(serverAgents[i].getName());
-				//CurrentLumenInRoom currentLumenInRoom = new CurrentLumenInRoom(serverAgents[i]);
 				CurrentStatusInRoom currentStatusInRoom = new CurrentStatusInRoom(serverAgents[i]);
 				currentStatuses.put(serverAgents[i].getLocalName(), currentStatusInRoom);
 
@@ -113,28 +109,13 @@ public class LightningAgent extends Agent {
 				private static final long serialVersionUID = 4875568271828534008L;
 
 				protected void handleInform(ACLMessage inform) {
-					//System.out.println("Agent "+inform.getSender().getName()+" successfully performed the requested action");
 					String messageContenut = inform.getContent();
-					//System.out.println("AgenteGestore-Luce::::" + messageContenut);
 					if (messageContenut != null) {
 						try {
 							int lumen = Integer.parseInt(messageContenut);
-							//System.out.println("AgenteGestore-Temperaturafloat::::"+temp);
-							//Float.parseFloat(messageContenut);
 
-							//Iterator<CurrentLumenInRoom> it = currentLumens.iterator();
-							//while (it.hasNext()) {
-
-							//CurrentLumenInRoom currentLumenInRoom = it.next();
-							//System.out.println(currentTemperatureInRoom.getroomAgent().getName() + " " + msg.getSender().getName());
-							//if (currentLumenInRoom.getroomAgent().getName().equals(inform.getSender().getName())) {
-							//CurrentStatusInRoom currentStatusInRoom = currentStatuses.get(inform.getSender().getName());      
-							//currentStatusInRoom.setCurrentLumen(lumen);
-							//currentStatuses.put(inform.getSender().getName(),currentStatusInRoom);
 							currentStatuses.get(inform.getSender().getLocalName()).setCurrentLumen(lumen);
-							//System.out.println(currentTemperatureInRoom.getCurrentTemperature());
-							//}
-							//}
+
 							System.out.println("AgenteGestore-Luce-HASH::::" + currentStatuses.get(inform.getSender().getLocalName()).getCurrentLumen());
 
 						} catch (NumberFormatException e) {
@@ -185,7 +166,6 @@ public class LightningAgent extends Agent {
 		@Override
 		protected void onTick() {
 
-			int lumenMinValue = 200;
 			Set<String> rooms = currentStatuses.keySet();
 			Iterator <String> roomIterator = rooms.iterator();
 			//for (CurrentLumenInRoom currentLumenInRoom : currentLumens) { // per ogni stanza
@@ -224,7 +204,7 @@ public class LightningAgent extends Agent {
 							requestLightToggle.setContent("true");
 
 						}
-					//se e' accesa
+						//se e' accesa
 					} else if (currentStatuses.get(roomName).getCurrentLumen() > (currentStatuses.get(roomName).getLumenLevel())*100) {
 
 						requestLightToggle.setContent("false");
@@ -241,7 +221,7 @@ public class LightningAgent extends Agent {
 
 						requestLightToggle.setContent("false");
 					}
-					
+
 				}
 
 
@@ -307,7 +287,11 @@ public class LightningAgent extends Agent {
 		@Override
 		protected void onTick() {
 
-			int lumenMinValue = 200;
+			//int lumenMinValue = 200;
+
+			int hour = Integer.parseInt((new SimpleDateFormat ("HH").format(new Date())).trim());
+			int sunrise = 6;
+			int sunset = 18;
 
 			Set<String> rooms = currentStatuses.keySet();
 			Iterator <String> roomIterator = rooms.iterator();
@@ -340,15 +324,30 @@ public class LightningAgent extends Agent {
 				requestShutterToggle.addReceiver(shutterAgents[0]); // da modificare----------------------
 				//System.out.println("setShutter:::: " + currentLumenInRoom.getCurrentLumen());
 				requestShutterToggle.setContent(""); // per far funzionare l'IF dopo
-				if (!currentStatuses.get(roomName).getShutterOpen()) {
-					if ((currentStatuses.get(roomName).getCurrentLumen() < lumenMinValue)) { // DA MODIFICARE!!!!
+				if (currentStatuses.get(roomName).getAutoLight()) { //se e' attiva la gestione automatica
+					if (!currentStatuses.get(roomName).getShutterStatus()) {
+						if ((currentStatuses.get(roomName).getCurrentLumen() < (currentStatuses.get(roomName).getLumenLevel())*100) && (hour>=sunrise || hour <=sunset)) { // DA MODIFICARE!!!!
 
-						requestShutterToggle.setContent("true");
+							requestShutterToggle.setContent("true");
 
+						}
+					} else if ((currentStatuses.get(roomName).getCurrentLumen() > (currentStatuses.get(roomName).getLumenLevel())*100)) { // DA MODIFICARE!!!!
+
+						requestShutterToggle.setContent("false");
 					}
-				} else if ((currentStatuses.get(roomName).getCurrentLumen() > lumenMinValue)) { // DA MODIFICARE!!!!
+				}
+				else { //se non e' attiva la gestione automatica
+					if (!currentStatuses.get(roomName).getShutterStatus()) {
+						if (currentStatuses.get(roomName).getShutterOpen()) {
 
-					requestShutterToggle.setContent("false");
+							requestShutterToggle.setContent("true");
+
+						}
+					} else if (!currentStatuses.get(roomName).getShutterOpen()) {
+
+						requestShutterToggle.setContent("false");
+					}
+
 				}
 
 				if (requestShutterToggle.getContent().equalsIgnoreCase("true") || requestShutterToggle.getContent().equalsIgnoreCase("false")) {
@@ -363,7 +362,7 @@ public class LightningAgent extends Agent {
 
 						protected void handleInform(ACLMessage inform) {
 							System.out.println("Agent " + inform.getSender().getName() + " send" + inform.getContent());
-							currentStatuses.get(roomName).setShutterOpen(Boolean.valueOf(inform.getContent()));
+							currentStatuses.get(roomName).setShutterStatus(Boolean.valueOf(inform.getContent()));
 						}
 
 						protected void handleAgree(ACLMessage agree) {
@@ -404,7 +403,7 @@ public class LightningAgent extends Agent {
 		 */
 		private static final long serialVersionUID = 1567060780776225027L;
 
-		
+
 		Boolean makeAction(String messageFromGateway) {
 			String type;
 			String room;
@@ -423,6 +422,11 @@ public class LightningAgent extends Agent {
 				Boolean lightOn = !(currentStatuses.get(room).getlightStatus());
 				currentStatuses.get(room).setLightOn(lightOn);
 				responseToSorter = lightOn.toString();
+				break;
+			case "shutter":
+				Boolean shutterOpen = !(currentStatuses.get(room).getShutterStatus());
+				currentStatuses.get(room).setShutterOpen(shutterOpen);
+				responseToSorter = shutterOpen.toString();
 				break;
 			case "autoLightning":
 				Boolean autoLight = !(currentStatuses.get(room).getAutoLight());
@@ -504,7 +508,7 @@ public class LightningAgent extends Agent {
 		private Boolean autoLight;
 		private Boolean lightOn;
 		private Boolean shutterOpen;
-
+		private Boolean shutterStatus;
 
 		public CurrentStatusInRoom() {
 			currentLumen = 0;
@@ -514,6 +518,7 @@ public class LightningAgent extends Agent {
 			lumenLevel = 1;
 			autoLight = false;
 			lightOn = false;
+			shutterStatus = false;
 		}
 
 		public CurrentStatusInRoom(AID roomAgent) {
@@ -524,6 +529,7 @@ public class LightningAgent extends Agent {
 			lumenLevel = 1;
 			autoLight = false;
 			lightOn = false;
+			shutterStatus = false;
 		}
 
 		public int getCurrentLumen() {
@@ -556,6 +562,14 @@ public class LightningAgent extends Agent {
 
 		public void setShutterOpen(Boolean shutterOpen) {
 			this.shutterOpen = shutterOpen;
+		}
+
+		public Boolean getShutterStatus() {
+			return shutterStatus;
+		}
+
+		public void setShutterStatus(Boolean shutterStatus) {
+			this.shutterStatus = shutterStatus;
 		}
 
 		public Boolean getLightOn() {
