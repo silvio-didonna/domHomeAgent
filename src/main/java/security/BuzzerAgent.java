@@ -26,15 +26,12 @@ public class BuzzerAgent extends Agent {
 
 
 	protected void setup() {
-
-                Object[] inRoom = this.getArguments();
-                String roomName = inRoom[0].toString();
                 
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
 		ServiceDescription sd = new ServiceDescription();
 		sd.setType("buzzer-manager");
-		sd.setName(roomName + "-buzzer"); // ad es: salone-buzzer
+		sd.setName("buzzer"); // ad es: salone-buzzer
 		dfd.addServices(sd);
 		try {
 			DFService.register(this, dfd);
