@@ -116,6 +116,7 @@ public class domHome {
         motionSensorAgent.start();
         laserSensorAgent.start();
         garageDoorAgent.start();
+        buzzerAgent.start();
 
         //Gestore ambiente
         roomAgent.start();
