@@ -58,8 +58,10 @@ public class domHome {
 
 		//System.out.println("containers created");
         //System.out.println("Launching the rma agent on the main container ...");
+        if(!args[0].equalsIgnoreCase("/dev/ttyACM0")) { //se si usa il raspberry non visualizza l'interfaccia grafica jade (rma)
         AgentController rma = mainContainer.createNewAgent("rma", "jade.tools.rma.rma", new Object[0]);
         rma.start();
+        }
 		//---------------------********************************************-----------------------------------
 	
         Object[] portAndBaud = new Object[2];
