@@ -574,6 +574,10 @@ public class TemperatureAgent extends Agent {
 				currentStatuses.get(room).setWindowOpen(windowOpen);
 				responseToSorter = windowOpen.toString();
 				break;
+			case "currentTemp":
+				currentStatuses.get(room).getCurrentTemperature();
+				responseToSorter = currentStatuses.get(room).getCurrentTemperature().toString();
+				break;
 			}
 
 

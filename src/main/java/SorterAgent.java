@@ -112,6 +112,7 @@ public class SorterAgent extends Agent {
 			switch(type) {
 			case "autoTemp":
 			case "temp":
+			case "currentTemp":
 			case "window":
 			case "fan":
 			{
