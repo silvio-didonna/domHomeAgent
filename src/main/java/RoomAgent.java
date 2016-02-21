@@ -31,6 +31,14 @@ public class RoomAgent extends Agent {
     private boolean laser;
 
     private boolean tempOrLumen = true;
+    
+    
+    AID[] thermometerAgents = null; Boolean thermometerAgentsFounds = false;
+    AID[] lightSensorAgents = null; Boolean lightSensorAgentsFounds = false;
+    AID[] fireSensorAgents = null; Boolean fireSensorAgentsFounds = false;
+    AID[] motionSensorAgents = null; Boolean motionSensorAgentsFounds = false;
+    AID[] laserSensorAgents = null; Boolean laserSensorAgentsFounds = false;
+    
 
     /**
      *
@@ -136,14 +144,15 @@ public class RoomAgent extends Agent {
 
         @Override
         protected void onTick() {
-
+        	
+        	if(!thermometerAgentsFounds) {
             //ricerca agenti termometro
             String roomName = myAgent.getLocalName(); // nome agente stanza
             DFAgentDescription template = new DFAgentDescription();
             ServiceDescription sdRoom = new ServiceDescription();
             sdRoom.setName(roomName + "-thermometer"); // ad es: salone-thermometer
             template.addServices(sdRoom);
-            AID[] thermometerAgents = null; // da modificare----------------------null
+            thermometerAgents = null; // da modificare----------------------null
             try {
                 DFAgentDescription[] result = DFService.search(myAgent, template);
                 //System.out.println("Found the following thermometer agents:");
@@ -156,6 +165,9 @@ public class RoomAgent extends Agent {
             } catch (FIPAException fe) {
                 fe.printStackTrace();
             }
+            
+            thermometerAgentsFounds=true;
+        	}
 
             ACLMessage requestTemperatureMessage = new ACLMessage(ACLMessage.REQUEST);
 
@@ -221,13 +233,14 @@ public class RoomAgent extends Agent {
         @Override
         protected void onTick() {
 
+        	if(!lightSensorAgentsFounds) {
             //ricerca agenti sensore luce
             String roomName = myAgent.getLocalName(); // nome agente stanza
             DFAgentDescription template = new DFAgentDescription();
             ServiceDescription sdRoom = new ServiceDescription();
             sdRoom.setName(roomName + "-light-sensor"); // ad es: salone-light-sensor
             template.addServices(sdRoom);
-            AID[] lightSensorAgents = null; // da modificare----------------------null
+            lightSensorAgents = null; // da modificare----------------------null
             try {
                 DFAgentDescription[] result = DFService.search(myAgent, template);
                 //System.out.println("Found the following light sensor agents:");
@@ -240,6 +253,8 @@ public class RoomAgent extends Agent {
             } catch (FIPAException fe) {
                 fe.printStackTrace();
             }
+            lightSensorAgentsFounds=true;
+        }
 
             ACLMessage requestTemperatureMessage = new ACLMessage(ACLMessage.REQUEST);
 
@@ -301,13 +316,14 @@ public class RoomAgent extends Agent {
         @Override
         protected void onTick() {
 
+        	if(!fireSensorAgentsFounds) {
             //ricerca agenti termometro
             String roomName = myAgent.getLocalName(); // nome agente stanza
             DFAgentDescription template = new DFAgentDescription();
             ServiceDescription sdRoom = new ServiceDescription();
             sdRoom.setName(roomName + "-flame"); // ad es: salone-flame
             template.addServices(sdRoom);
-            AID[] fireSensorAgents = null; // da modificare----------------------null
+            fireSensorAgents = null; // da modificare----------------------null
             try {
                 DFAgentDescription[] result = DFService.search(myAgent, template);
                 //System.out.println("Found the following fire sensor agents:");
@@ -320,6 +336,8 @@ public class RoomAgent extends Agent {
             } catch (FIPAException fe) {
                 fe.printStackTrace();
             }
+            fireSensorAgentsFounds=true;
+        	}
 
             ACLMessage requestFireStatusMessage = new ACLMessage(ACLMessage.REQUEST);
 
@@ -377,13 +395,14 @@ public class RoomAgent extends Agent {
         @Override
         protected void onTick() {
 
+        	if(!motionSensorAgentsFounds) {
             //ricerca agenti termometro
             String roomName = myAgent.getLocalName(); // nome agente stanza
             DFAgentDescription template = new DFAgentDescription();
             ServiceDescription sdRoom = new ServiceDescription();
             sdRoom.setName(roomName + "-motion"); // ad es: salone-motion
             template.addServices(sdRoom);
-            AID[] motionSensorAgents = null; // da modificare----------------------null
+            motionSensorAgents = null; // da modificare----------------------null
             try {
                 DFAgentDescription[] result = DFService.search(myAgent, template);
                 //System.out.println("Found the following fire sensor agents:");
@@ -396,6 +415,8 @@ public class RoomAgent extends Agent {
             } catch (FIPAException fe) {
                 fe.printStackTrace();
             }
+            motionSensorAgentsFounds=true;
+        	}
 
             ACLMessage requestMotionStatusMessage = new ACLMessage(ACLMessage.REQUEST);
 
@@ -452,13 +473,14 @@ public class RoomAgent extends Agent {
         @Override
         protected void onTick() {
 
+        	if(!laserSensorAgentsFounds) {
             //ricerca agenti termometro
             String roomName = myAgent.getLocalName(); // nome agente stanza
             DFAgentDescription template = new DFAgentDescription();
             ServiceDescription sdRoom = new ServiceDescription();
             sdRoom.setName(roomName + "-laser"); // ad es: salone-laser
             template.addServices(sdRoom);
-            AID[] laserSensorAgents = null; // da modificare----------------------null
+            laserSensorAgents = null; // da modificare----------------------null
             try {
                 DFAgentDescription[] result = DFService.search(myAgent, template);
                 //System.out.println("Found the following laser sensor agents:");
@@ -471,6 +493,8 @@ public class RoomAgent extends Agent {
             } catch (FIPAException fe) {
                 fe.printStackTrace();
             }
+            laserSensorAgentsFounds=true;
+        	}
 
             ACLMessage requestLaserStatusMessage = new ACLMessage(ACLMessage.REQUEST);
 

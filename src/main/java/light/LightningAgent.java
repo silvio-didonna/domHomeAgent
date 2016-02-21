@@ -171,30 +171,10 @@ public class LightningAgent extends Agent {
 			//for (CurrentLumenInRoom currentLumenInRoom : currentLumens) { // per ogni stanza
 			while(roomIterator.hasNext()) {
 				String roomName = roomIterator.next();
-				//ricerca agenti luce
-				//String roomName = currentLumenInRoom.getroomAgent().getLocalName(); // nome agente stanza
-				DFAgentDescription template = new DFAgentDescription();
-				ServiceDescription sdRoom = new ServiceDescription();
-				sdRoom.setName(roomName + "-light"); // ad es: salone-light
-				template.addServices(sdRoom);
-				AID[] lightAgents=null; // da modificare----------------------null
-				try {
-					DFAgentDescription[] result = DFService.search(myAgent, template);
-					//System.out.println("Found the following light agents:");
-					lightAgents = new AID[result.length];
-					for (int i = 0; i < result.length; ++i) {
-						lightAgents[i] = result[i].getName();
-						//System.out.println(lightAgents[i].getName());
-
-					}
-				} catch (FIPAException fe) {
-					fe.printStackTrace();
-				}
-
+				
 				//AID msgReceiver = new AID("Luce", AID.ISLOCALNAME);
 				ACLMessage requestLightToggle = new ACLMessage(ACLMessage.REQUEST);
 				//requestLightToggle.addReceiver(msgReceiver);
-				requestLightToggle.addReceiver(lightAgents[0]); // da modificare----------------------
 				//System.out.println("setLight:::: " + currentLumenInRoom.getCurrentLumen());
 				requestLightToggle.setContent(""); // per far funzionare l'IF dopo
 				if (currentStatuses.get(roomName).getAutoLight()) { //se e' attiva la gestione automatica
@@ -227,6 +207,28 @@ public class LightningAgent extends Agent {
 
 				if (requestLightToggle.getContent().equalsIgnoreCase("true") || requestLightToggle.getContent().equalsIgnoreCase("false")) {
 
+					//ricerca agenti luce
+					//String roomName = currentLumenInRoom.getroomAgent().getLocalName(); // nome agente stanza
+					DFAgentDescription template = new DFAgentDescription();
+					ServiceDescription sdRoom = new ServiceDescription();
+					sdRoom.setName(roomName + "-light"); // ad es: salone-light
+					template.addServices(sdRoom);
+					AID[] lightAgents=null; // da modificare----------------------null
+					try {
+						DFAgentDescription[] result = DFService.search(myAgent, template);
+						//System.out.println("Found the following light agents:");
+						lightAgents = new AID[result.length];
+						for (int i = 0; i < result.length; ++i) {
+							lightAgents[i] = result[i].getName();
+							//System.out.println(lightAgents[i].getName());
+
+						}
+					} catch (FIPAException fe) {
+						fe.printStackTrace();
+					}
+					
+					requestLightToggle.addReceiver(lightAgents[0]); // da modificare----------------------
+					
 					requestLightToggle.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
 					// We want to receive a reply in 10 secs
 					requestLightToggle.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
@@ -298,30 +300,10 @@ public class LightningAgent extends Agent {
 			//for (CurrentLumenInRoom currentLumenInRoom : currentLumens) { // per ogni stanza
 			while(roomIterator.hasNext()) {
 				String roomName = roomIterator.next();
-				//ricerca agenti luce
-				//String roomName = currentLumenInRoom.getroomAgent().getLocalName(); // nome agente stanza
-				DFAgentDescription template = new DFAgentDescription();
-				ServiceDescription sdRoom = new ServiceDescription();
-				sdRoom.setName(roomName + "-shutter"); // ad es: salone-light
-				template.addServices(sdRoom);
-				AID[] shutterAgents=null; // da modificare----------------------null
-				try {
-					DFAgentDescription[] result = DFService.search(myAgent, template);
-					//System.out.println("Found the following light agents:");
-					shutterAgents = new AID[result.length];
-					for (int i = 0; i < result.length; ++i) {
-						shutterAgents[i] = result[i].getName();
-						//System.out.println(shutterAgents[i].getName());
-
-					}
-				} catch (FIPAException fe) {
-					fe.printStackTrace();
-				}
 
 				//AID msgReceiver = new AID("Luce", AID.ISLOCALNAME);
 				ACLMessage requestShutterToggle = new ACLMessage(ACLMessage.REQUEST);
 				//requestLightToggle.addReceiver(msgReceiver);
-				requestShutterToggle.addReceiver(shutterAgents[0]); // da modificare----------------------
 				//System.out.println("setShutter:::: " + currentLumenInRoom.getCurrentLumen());
 				requestShutterToggle.setContent(""); // per far funzionare l'IF dopo
 				if (currentStatuses.get(roomName).getAutoLight()) { //se e' attiva la gestione automatica
@@ -352,6 +334,28 @@ public class LightningAgent extends Agent {
 
 				if (requestShutterToggle.getContent().equalsIgnoreCase("true") || requestShutterToggle.getContent().equalsIgnoreCase("false")) {
 
+					//ricerca agenti luce
+					//String roomName = currentLumenInRoom.getroomAgent().getLocalName(); // nome agente stanza
+					DFAgentDescription template = new DFAgentDescription();
+					ServiceDescription sdRoom = new ServiceDescription();
+					sdRoom.setName(roomName + "-shutter"); // ad es: salone-light
+					template.addServices(sdRoom);
+					AID[] shutterAgents=null; // da modificare----------------------null
+					try {
+						DFAgentDescription[] result = DFService.search(myAgent, template);
+						//System.out.println("Found the following light agents:");
+						shutterAgents = new AID[result.length];
+						for (int i = 0; i < result.length; ++i) {
+							shutterAgents[i] = result[i].getName();
+							//System.out.println(shutterAgents[i].getName());
+
+						}
+					} catch (FIPAException fe) {
+						fe.printStackTrace();
+					}
+					
+					requestShutterToggle.addReceiver(shutterAgents[0]); // da modificare----------------------
+					
 					requestShutterToggle.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
 					// We want to receive a reply in 10 secs
 					requestShutterToggle.setReplyByDate(new Date(System.currentTimeMillis() + 10000));

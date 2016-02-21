@@ -156,27 +156,10 @@ public class FireSystemAgent extends Agent {
 			Iterator <String> roomIterator = rooms.iterator();
 			while(roomIterator.hasNext()) {
 				String roomName = roomIterator.next();
-				//ricerca agenti buzzer
-				DFAgentDescription template = new DFAgentDescription();
-				ServiceDescription sdRoom = new ServiceDescription();
-				sdRoom.setName("buzzer");
-				template.addServices(sdRoom);
-				AID[] buzzerAgents=null; // da modificare----------------------null
-				try {
-					DFAgentDescription[] result = DFService.search(myAgent, template);
-					buzzerAgents = new AID[result.length];
-					for (int i = 0; i < result.length; ++i) {
-						buzzerAgents[i] = result[i].getName();
-						//System.out.println(lightAgents[i].getName());
-
-					}
-				} catch (FIPAException fe) {
-					fe.printStackTrace();
-				}
+				
 
 				//AID msgReceiver = new AID("Luce", AID.ISLOCALNAME);
 				ACLMessage requestBuzzerToggle = new ACLMessage(ACLMessage.REQUEST);
-				requestBuzzerToggle.addReceiver(buzzerAgents[0]); // da modificare----------------------
 				requestBuzzerToggle.setContent(""); // per far funzionare l'IF dopo
 				if (fireSystemOn) { //se e' attivo l'impianto antincendio
 					if (currentStatuses.get(roomName).getCurrentFireStatus()) { //se c'e' un incendio
@@ -192,6 +175,26 @@ public class FireSystemAgent extends Agent {
 
 				if (requestBuzzerToggle.getContent().equalsIgnoreCase("true") || requestBuzzerToggle.getContent().equalsIgnoreCase("false")) {
 
+					//ricerca agenti buzzer
+					DFAgentDescription template = new DFAgentDescription();
+					ServiceDescription sdRoom = new ServiceDescription();
+					sdRoom.setName("buzzer");
+					template.addServices(sdRoom);
+					AID[] buzzerAgents=null; // da modificare----------------------null
+					try {
+						DFAgentDescription[] result = DFService.search(myAgent, template);
+						buzzerAgents = new AID[result.length];
+						for (int i = 0; i < result.length; ++i) {
+							buzzerAgents[i] = result[i].getName();
+							//System.out.println(lightAgents[i].getName());
+
+						}
+					} catch (FIPAException fe) {
+						fe.printStackTrace();
+					}
+					
+					requestBuzzerToggle.addReceiver(buzzerAgents[0]); // da modificare----------------------
+					
 					requestBuzzerToggle.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
 					// We want to receive a reply in 10 secs
 					requestBuzzerToggle.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
