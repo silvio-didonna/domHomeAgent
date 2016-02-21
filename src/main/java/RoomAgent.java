@@ -533,9 +533,10 @@ public class RoomAgent extends Agent {
         protected void onTick() {
             if (tempOrLumen) {
                 //invia temperatura
-
+            	//local:  http://192.168.1.111:3000/update?key=6NWTBO4M2J2BN00Y&field1=
+            	//https://api.thingspeak.com/update?api_key=OW7HWDZ4UTP04RT6&field1=
                 try {
-                    ThingSpeak.getHTML("https://api.thingspeak.com/update?api_key=OW7HWDZ4UTP04RT6&field1=" + String.valueOf(temperature));
+                    ThingSpeak.getHTML("http://192.168.1.111:3000/update?key=6NWTBO4M2J2BN00Y&field1=" + String.valueOf(temperature));
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -545,7 +546,7 @@ public class RoomAgent extends Agent {
                 //invia lumen
 
                 try {
-                    ThingSpeak.getHTML("https://api.thingspeak.com/update?api_key=OW7HWDZ4UTP04RT6&field2=" + String.valueOf(lumens));
+                    ThingSpeak.getHTML("http://192.168.1.111:3000/update?key=6NWTBO4M2J2BN00Y&field2=" + String.valueOf(lumens));
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
