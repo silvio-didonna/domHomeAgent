@@ -3,7 +3,6 @@ import java.util.Vector;
 
 import jade.core.AID;
 import jade.core.Agent;
-import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.DataStore;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
@@ -99,7 +98,6 @@ public class ShutterAgent extends Agent {
 			String incomingRequestKey = (String) ((AchieveREResponder) parent).REQUEST_KEY;
 			ACLMessage incomingRequest = (ACLMessage) getDataStore().get(incomingRequestKey);
 			// Prepare the request to forward to the responder
-			//System.out.println("Agent "+getLocalName()+": Forward the request to "+responder.getName());
 			ACLMessage outgoingRequest = new ACLMessage(ACLMessage.REQUEST);
 			outgoingRequest.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
 			outgoingRequest.setContent("shutter1\n");

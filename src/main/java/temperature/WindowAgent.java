@@ -103,7 +103,6 @@ public class WindowAgent extends Agent {
             String incomingRequestKey = (String) ((AchieveREResponder) parent).REQUEST_KEY;
             ACLMessage incomingRequest = (ACLMessage) getDataStore().get(incomingRequestKey);
 			// Prepare the request to forward to the responder
-            //System.out.println("Agent "+getLocalName()+": Forward the request to "+responder.getName());
             ACLMessage outgoingRequest = new ACLMessage(ACLMessage.REQUEST);
             outgoingRequest.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
             outgoingRequest.setContent("window1\n");

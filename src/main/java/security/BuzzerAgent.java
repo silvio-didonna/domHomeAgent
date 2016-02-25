@@ -3,7 +3,6 @@ import java.util.Vector;
 
 import jade.core.AID;
 import jade.core.Agent;
-import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.DataStore;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
@@ -26,12 +25,12 @@ public class BuzzerAgent extends Agent {
 
 
 	protected void setup() {
-                
+
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
 		ServiceDescription sd = new ServiceDescription();
 		sd.setType("buzzer-manager");
-		sd.setName("buzzer"); // ad es: salone-buzzer
+		sd.setName("buzzer"); 
 		dfd.addServices(sd);
 		try {
 			DFService.register(this, dfd);
@@ -98,7 +97,6 @@ public class BuzzerAgent extends Agent {
 			String incomingRequestKey = (String) ((AchieveREResponder) parent).REQUEST_KEY;
 			ACLMessage incomingRequest = (ACLMessage) getDataStore().get(incomingRequestKey);
 			// Prepare the request to forward to the responder
-			//System.out.println("Agent "+getLocalName()+": Forward the request to "+responder.getName());
 			ACLMessage outgoingRequest = new ACLMessage(ACLMessage.REQUEST);
 			outgoingRequest.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
 			outgoingRequest.setContent("buzzer1\n");

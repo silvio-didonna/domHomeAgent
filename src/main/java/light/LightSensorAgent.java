@@ -5,7 +5,6 @@ import java.util.Vector;
 
 import jade.core.AID;
 import jade.core.Agent;
-import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
@@ -46,8 +45,6 @@ public class LightSensorAgent extends Agent {
         } catch (FIPAException fe) {
             fe.printStackTrace();
         }
-        //addBehaviour(new RequestCurrentLumen(this, 3000));
-        //addBehaviour(new GetCurrentLumen());
         addBehaviour(new GetCurrentLumenFIPA(this, 3000));
         addBehaviour(new LightSensorService());
     }

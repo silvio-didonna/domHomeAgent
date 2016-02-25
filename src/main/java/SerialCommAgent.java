@@ -67,7 +67,6 @@ public class SerialCommAgent extends Agent {
         }
 
         addBehaviour(new SendSerialServiceBehaviourFIPA());
-        //addBehaviour(new ReceiveSerialServiceBehaviour());
     }
 
     private class SendSerialServiceBehaviourFIPA extends OneShotBehaviour {
@@ -92,7 +91,6 @@ public class SerialCommAgent extends Agent {
                 String msgRecv = "";
 
                 protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
-                    //System.out.println("Agent "+getLocalName()+": REQUEST received from "+request.getSender().getName()+". Action is "+request.getContent());
                     if (!request.getContent().isEmpty()) {
                         // We agree to perform the action.
                         ACLMessage agree = request.createReply();
@@ -117,11 +115,10 @@ public class SerialCommAgent extends Agent {
                 }
             });
 
-        } // fine action
+        } 
 
         String sendRecSerial(String msgContent) {
             try {
-                //serialPort.getOutputStream().write((msgSender + '#' + msgContent).getBytes());
                 serialPort.getOutputStream().write((msgContent).getBytes());
             } catch (IOException e1) {
                 // TODO Auto-generated catch block

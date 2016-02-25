@@ -32,8 +32,6 @@ public class LightningAgent extends Agent {
 	 */
 	private static final long serialVersionUID = 697611633768237195L;
 	private AID[] serverAgents;
-	//private static Map<AID, Float> currentLumens = new HashMap<>();
-	//List<CurrentLumenInRoom> currentLumens = new LinkedList<CurrentLumenInRoom>();
 	Map <String,CurrentStatusInRoom> currentStatuses = new HashMap<String,CurrentStatusInRoom>();
 	String responseToSorter = "";
 
@@ -168,14 +166,10 @@ public class LightningAgent extends Agent {
 
 			Set<String> rooms = currentStatuses.keySet();
 			Iterator <String> roomIterator = rooms.iterator();
-			//for (CurrentLumenInRoom currentLumenInRoom : currentLumens) { // per ogni stanza
 			while(roomIterator.hasNext()) {
 				String roomName = roomIterator.next();
 				
-				//AID msgReceiver = new AID("Luce", AID.ISLOCALNAME);
 				ACLMessage requestLightToggle = new ACLMessage(ACLMessage.REQUEST);
-				//requestLightToggle.addReceiver(msgReceiver);
-				//System.out.println("setLight:::: " + currentLumenInRoom.getCurrentLumen());
 				requestLightToggle.setContent(""); // per far funzionare l'IF dopo
 				if (currentStatuses.get(roomName).getAutoLight()) { //se e' attiva la gestione automatica
 					if (!currentStatuses.get(roomName).getlightStatus()) {//se e' spenta
@@ -208,19 +202,16 @@ public class LightningAgent extends Agent {
 				if (requestLightToggle.getContent().equalsIgnoreCase("true") || requestLightToggle.getContent().equalsIgnoreCase("false")) {
 
 					//ricerca agenti luce
-					//String roomName = currentLumenInRoom.getroomAgent().getLocalName(); // nome agente stanza
 					DFAgentDescription template = new DFAgentDescription();
 					ServiceDescription sdRoom = new ServiceDescription();
 					sdRoom.setName(roomName + "-light"); // ad es: salone-light
 					template.addServices(sdRoom);
-					AID[] lightAgents=null; // da modificare----------------------null
+					AID[] lightAgents=null; 
 					try {
 						DFAgentDescription[] result = DFService.search(myAgent, template);
-						//System.out.println("Found the following light agents:");
 						lightAgents = new AID[result.length];
 						for (int i = 0; i < result.length; ++i) {
 							lightAgents[i] = result[i].getName();
-							//System.out.println(lightAgents[i].getName());
 
 						}
 					} catch (FIPAException fe) {
@@ -232,7 +223,6 @@ public class LightningAgent extends Agent {
 					requestLightToggle.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
 					// We want to receive a reply in 10 secs
 					requestLightToggle.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
-					//requestLightToggle.setContent("dummy-action");
 
 					addBehaviour(new AchieveREInitiator(myAgent, requestLightToggle) {
 
@@ -289,7 +279,6 @@ public class LightningAgent extends Agent {
 		@Override
 		protected void onTick() {
 
-			//int lumenMinValue = 200;
 
 			int hour = Integer.parseInt((new SimpleDateFormat ("HH").format(new Date())).trim());
 			int sunrise = 6;
@@ -297,14 +286,10 @@ public class LightningAgent extends Agent {
 
 			Set<String> rooms = currentStatuses.keySet();
 			Iterator <String> roomIterator = rooms.iterator();
-			//for (CurrentLumenInRoom currentLumenInRoom : currentLumens) { // per ogni stanza
 			while(roomIterator.hasNext()) {
 				String roomName = roomIterator.next();
 
-				//AID msgReceiver = new AID("Luce", AID.ISLOCALNAME);
 				ACLMessage requestShutterToggle = new ACLMessage(ACLMessage.REQUEST);
-				//requestLightToggle.addReceiver(msgReceiver);
-				//System.out.println("setShutter:::: " + currentLumenInRoom.getCurrentLumen());
 				requestShutterToggle.setContent(""); // per far funzionare l'IF dopo
 				if (currentStatuses.get(roomName).getAutoLight()) { //se e' attiva la gestione automatica
 					if (!currentStatuses.get(roomName).getShutterStatus()) {
@@ -335,19 +320,16 @@ public class LightningAgent extends Agent {
 				if (requestShutterToggle.getContent().equalsIgnoreCase("true") || requestShutterToggle.getContent().equalsIgnoreCase("false")) {
 
 					//ricerca agenti luce
-					//String roomName = currentLumenInRoom.getroomAgent().getLocalName(); // nome agente stanza
 					DFAgentDescription template = new DFAgentDescription();
 					ServiceDescription sdRoom = new ServiceDescription();
 					sdRoom.setName(roomName + "-shutter"); // ad es: salone-light
 					template.addServices(sdRoom);
-					AID[] shutterAgents=null; // da modificare----------------------null
+					AID[] shutterAgents=null; 
 					try {
 						DFAgentDescription[] result = DFService.search(myAgent, template);
-						//System.out.println("Found the following light agents:");
 						shutterAgents = new AID[result.length];
 						for (int i = 0; i < result.length; ++i) {
 							shutterAgents[i] = result[i].getName();
-							//System.out.println(shutterAgents[i].getName());
 
 						}
 					} catch (FIPAException fe) {
@@ -359,7 +341,6 @@ public class LightningAgent extends Agent {
 					requestShutterToggle.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
 					// We want to receive a reply in 10 secs
 					requestShutterToggle.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
-					//requestLightToggle.setContent("dummy-action");
 
 					addBehaviour(new AchieveREInitiator(myAgent, requestShutterToggle) {
 
@@ -463,17 +444,12 @@ public class LightningAgent extends Agent {
 				private static final long serialVersionUID = 6070529588872379895L;
 
 				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
-					//    if (request.getContent().equalsIgnoreCase("lumen") && currentLumen >= 0) {
 					// We agree to perform the action.
 
 					makeAction(request.getContent());
 					ACLMessage agree = request.createReply();
 					agree.setPerformative(ACLMessage.AGREE);
 					return agree;
-					//    } else {
-					// We refuse to perform the action
-					//        throw new RefuseException("Message content not supported or corrupted value");
-					//    }
 				}
 
 				protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {

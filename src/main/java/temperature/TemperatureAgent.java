@@ -168,18 +168,13 @@ public class TemperatureAgent extends Agent {
 		@Override
 		protected void onTick() {
 
-			//Float tempMaxValue = new Float(20);
 			Set<String> rooms = currentStatuses.keySet();
 			Iterator <String> roomIterator = rooms.iterator();
 			while(roomIterator.hasNext()) {
 				String roomName = roomIterator.next();
-				//for (CurrentTemperatureInRoom currentTemperatureInRoom : currentTemperatures) { // per ogni stanza
 
-				//AID msgReceiver= new AID("Ventilatore",AID.ISLOCALNAME);
 				ACLMessage requestFanToggle = new ACLMessage(ACLMessage.REQUEST);
-				//requestFanToggle.addReceiver(msgReceiver);
 
-				//System.out.println("setFan:::: " + currentTemperatureInRoom.getCurrentTemperature());
 				requestFanToggle.setContent(""); // per far funzionare l'IF dopo
 				if (autoTemperature) { //se e' attiva la gestione automatica
 					if (!currentStatuses.get(roomName).getFanStatus()) {
@@ -213,7 +208,6 @@ public class TemperatureAgent extends Agent {
 				if (requestFanToggle.getContent().equalsIgnoreCase("true") || requestFanToggle.getContent().equalsIgnoreCase("false")) {
 
 					//ricerca agenti ventilatore
-					//String roomName = currentTemperatureInRoom.getroomAgent().getLocalName(); // nome agente stanza
 					DFAgentDescription template = new DFAgentDescription();
 					ServiceDescription sdRoom = new ServiceDescription();
 					sdRoom.setName(roomName + "-fan"); // ad es: salone-fan
@@ -221,11 +215,9 @@ public class TemperatureAgent extends Agent {
 					AID[] fanAgents = null; // da modificare----------------------null
 					try {
 						DFAgentDescription[] result = DFService.search(myAgent, template);
-						//System.out.println("Found the following fan agents:");
 						fanAgents = new AID[result.length];
 						for (int i = 0; i < result.length; ++i) {
 							fanAgents[i] = result[i].getName();
-							//System.out.println(fanAgents[i].getName());
 
 						}
 					} catch (FIPAException fe) {
@@ -236,7 +228,6 @@ public class TemperatureAgent extends Agent {
 					requestFanToggle.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
 					// We want to receive a reply in 10 secs
 					requestFanToggle.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
-					//requestFanToggle.setContent("dummy-action");
 
 					addBehaviour(new AchieveREInitiator(myAgent, requestFanToggle) {
 
@@ -297,18 +288,13 @@ public class TemperatureAgent extends Agent {
 		@Override
 		protected void onTick() {
 
-			//Float tempMaxValue = new Float(20);
-			//for (CurrentTemperatureInRoom currentTemperatureInRoom : currentTemperatures) { // per ogni stanza
 			Set<String> rooms = currentStatuses.keySet();
 			Iterator <String> roomIterator = rooms.iterator();
 			while(roomIterator.hasNext()) {
 				String roomName = roomIterator.next();
 				
-				//AID msgReceiver = new AID("Finestra", AID.ISLOCALNAME);
 				ACLMessage requestWindowToggle = new ACLMessage(ACLMessage.REQUEST);
-				//requestWindowToggle.addReceiver(msgReceiver);
 
-				//System.out.println("setWindow:::: " + currentTemperatureInRoom.getCurrentTemperature());
 				requestWindowToggle.setContent(""); // per far funzionare l'IF dopo
 				if (autoTemperature) //se e' attiva la gestione automatica
 				{ 
@@ -344,19 +330,16 @@ public class TemperatureAgent extends Agent {
 				if (requestWindowToggle.getContent().equalsIgnoreCase("true") || requestWindowToggle.getContent().equalsIgnoreCase("false")) {
 
 					//ricerca agenti finestra
-					//String roomName = currentTemperatureInRoom.getroomAgent().getLocalName(); // nome agente stanza
 					DFAgentDescription template = new DFAgentDescription();
 					ServiceDescription sdRoom = new ServiceDescription();
 					sdRoom.setName(roomName + "-window"); // ad es: salone-window
 					template.addServices(sdRoom);
-					AID[] windowAgents = null; // da modificare----------------------null
+					AID[] windowAgents = null; 
 					try {
 						DFAgentDescription[] result = DFService.search(myAgent, template);
-						//System.out.println("Found the following window agents:");
 						windowAgents = new AID[result.length];
 						for (int i = 0; i < result.length; ++i) {
 							windowAgents[i] = result[i].getName();
-							//System.out.println(windowAgents[i].getName());
 
 						}
 					} catch (FIPAException fe) {
@@ -369,7 +352,6 @@ public class TemperatureAgent extends Agent {
 					requestWindowToggle.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
 					// We want to receive a reply in 10 secs
 					requestWindowToggle.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
-					//requestWindowToggle.setContent("dummy-action");
 
 					addBehaviour(new AchieveREInitiator(myAgent, requestWindowToggle) {
 
@@ -426,9 +408,7 @@ public class TemperatureAgent extends Agent {
 		@Override
 		protected void onTick() {
 
-			//Float tempMinValue = new Float(20);
 			Float averageTemp = new Float(0);
-			//for (CurrentTemperatureInRoom currentTemperatureInRoom : currentTemperatures) { // per ogni stanza
 			Set<String> rooms = currentStatuses.keySet();
 			Iterator <String> roomIterator = rooms.iterator();
 			while(roomIterator.hasNext()) {
@@ -436,15 +416,9 @@ public class TemperatureAgent extends Agent {
 				averageTemp += currentStatuses.get(roomName).getCurrentTemperature();
 			}
 			averageTemp = averageTemp/currentStatuses.size();
-			//System.out.println("setBoiler:::: " + averageTemp + " "+currentTemperatures.size());
 
-			
-
-			//AID msgReceiver = new AID("Finestra", AID.ISLOCALNAME);
 			ACLMessage requestBoilerToggle = new ACLMessage(ACLMessage.REQUEST);
-			//requestWindowToggle.addReceiver(msgReceiver);
 
-			//System.out.println("setWindow:::: " + currentTemperatureInRoom.getCurrentTemperature());
 			requestBoilerToggle.setContent(""); // per far funzionare l'IF dopo
 			if (autoTemperature) //se e' attiva la gestione automatica
 			{ 
@@ -468,20 +442,12 @@ public class TemperatureAgent extends Agent {
 				{
 					requestBoilerToggle.setContent("false");
 				}
-				/*
-				else
-				{
-				
-					requestBoilerToggle.setContent("true");
-				}
-				*/
 				
 			}
 
 			if (requestBoilerToggle.getContent().equalsIgnoreCase("true") || requestBoilerToggle.getContent().equalsIgnoreCase("false")) {
 
 				//ricerca agenti boiler
-				//String roomName = currentTemperatureInRoom.getroomAgent().getLocalName(); // nome agente stanza
 				DFAgentDescription template = new DFAgentDescription();
 				ServiceDescription sdRoom = new ServiceDescription();
 				sdRoom.setName("boiler"); 
@@ -489,11 +455,9 @@ public class TemperatureAgent extends Agent {
 				AID[] boilerAgents = null; // da modificare----------------------null
 				try {
 					DFAgentDescription[] result = DFService.search(myAgent, template);
-					//System.out.println("Found the following window agents:");
 					boilerAgents = new AID[result.length];
 					for (int i = 0; i < result.length; ++i) {
 						boilerAgents[i] = result[i].getName();
-						//System.out.println(windowAgents[i].getName());
 
 					}
 				} catch (FIPAException fe) {
@@ -505,7 +469,6 @@ public class TemperatureAgent extends Agent {
 				requestBoilerToggle.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
 				// We want to receive a reply in 10 secs
 				requestBoilerToggle.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
-				//requestWindowToggle.setContent("dummy-action");
 
 				addBehaviour(new AchieveREInitiator(myAgent, requestBoilerToggle) {
 

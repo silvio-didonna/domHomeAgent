@@ -3,8 +3,6 @@ package security;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
@@ -54,11 +52,9 @@ public class AntitheftAgent extends Agent {
 		template.addServices(sdRoom);
 		try {
 			DFAgentDescription[] result = DFService.search(this, template);
-			//System.out.println("Found the following seller agents:");
 			serverAgents = new AID[result.length];
 			for (int i = 0; i < result.length; ++i) {
 				serverAgents[i] = result[i].getName();
-				//System.out.println(serverAgents[i].getName());
 				CurrentStatusInRoom currentStatusInRoom = new CurrentStatusInRoom(serverAgents[i]);
 				currentStatuses.put(serverAgents[i].getLocalName(), currentStatusInRoom);
 
@@ -99,7 +95,6 @@ public class AntitheftAgent extends Agent {
 			addBehaviour(new AchieveREInitiator(myAgent, requestMotionStatusMessage) {
 
 				protected void handleInform(ACLMessage inform) {
-					//System.out.println("Agent "+inform.getSender().getName()+" successfully performed the requested action");
 					String messageContenut = inform.getContent();
 					System.out.println("Agente Gestore-AntifurtoMotion::::" + messageContenut);
 					if (messageContenut != null) {
@@ -168,7 +163,6 @@ public class AntitheftAgent extends Agent {
 			addBehaviour(new AchieveREInitiator(myAgent, requestLaserStatusMessage) {
 
 				protected void handleInform(ACLMessage inform) {
-					//System.out.println("Agent "+inform.getSender().getName()+" successfully performed the requested action");
 					String messageContenut = inform.getContent();
 					System.out.println("Agente Gestore-AntifurtoLaser::::" + messageContenut);
 					if (messageContenut != null) {
@@ -253,7 +247,6 @@ public class AntitheftAgent extends Agent {
 						buzzerAgents = new AID[result.length];
 						for (int i = 0; i < result.length; ++i) {
 							buzzerAgents[i] = result[i].getName();
-							//System.out.println(lightAgents[i].getName());
 
 						}
 					} catch (FIPAException fe) {
@@ -265,7 +258,6 @@ public class AntitheftAgent extends Agent {
 					requestBuzzerToggle.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
 					// We want to receive a reply in 10 secs
 					requestBuzzerToggle.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
-					//requestLightToggle.setContent("dummy-action");
 
 					addBehaviour(new AchieveREInitiator(myAgent, requestBuzzerToggle) {
 

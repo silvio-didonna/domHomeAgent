@@ -146,56 +146,6 @@ public class SorterAgent extends Agent {
 			}
 			return receiver;
 		}
-/*
-		String chooseMessage(String messageFromGateway) {
-			String type;
-			String room;
-			String value;
-
-			String message;
-			
-
-			String msg = messageFromGateway;
-			msg = msg.replace("set-", "");
-			String[] parts = msg.split("-");
-			type = parts[0];
-			room = parts[1];
-			value = parts[2];
-
-			System.out.println("parametro1 = " + type);
-			System.out.println("parametro2 = " + room);
-			System.out.println("parametro3 = " + value);
-			
-			message = room;
-
-			switch(room) {
-			case "general":
-			{
-				break;
-			}
-			case "hall":
-			{
-				break;
-			}
-			case "room":
-			{
-				break;
-			}
-			case "bathroom":
-			{
-				break;
-			}
-			case "kitchen":
-			{
-				break;
-			}
-			}
-
-
-			return "";
-		}
-		*/
-
 
 		// Since we don't know what message to send to the responder
 		// when we construct this AchieveREInitiator, we redefine this 
@@ -205,7 +155,6 @@ public class SorterAgent extends Agent {
 			String incomingRequestKey = (String) ((AchieveREResponder) parent).REQUEST_KEY;
 			ACLMessage incomingRequest = (ACLMessage) getDataStore().get(incomingRequestKey);
 			// Prepare the request to forward to the responder
-			//System.out.println("Agent "+getLocalName()+": Forward the request to "+responder.getName());
 			ACLMessage outgoingRequest = new ACLMessage(ACLMessage.REQUEST);
 			outgoingRequest.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
 			outgoingRequest.setContent(messageFromGateway);
@@ -247,10 +196,8 @@ public class SorterAgent extends Agent {
 
 		private void storeNotification(int performative, String message) {
 			if (performative == ACLMessage.INFORM) {
-				//System.out.println("Agent "+getLocalName()+": brokerage successful");
 			}
 			else {
-				//System.out.println("Agent "+getLocalName()+": brokerage failed");
 			}
 
 			// Retrieve the incoming request from the DataStore

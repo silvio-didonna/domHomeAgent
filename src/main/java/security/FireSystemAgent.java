@@ -3,8 +3,6 @@ package security;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
@@ -29,8 +27,6 @@ import jade.proto.AchieveREResponder;
 public class FireSystemAgent extends Agent {
 
 	private AID[] serverAgents;
-	//private static Map<AID, Float> currentTemperatures = new HashMap<>();
-	//List<CurrentFireStatusInRoom> currentFireStatuses = new LinkedList<CurrentFireStatusInRoom>();
 	Map <String,CurrentStatusInRoom> currentStatuses = new HashMap<String,CurrentStatusInRoom>();
 	String responseToSorter = "";
 	Boolean fireSystemOn=false;
@@ -56,7 +52,6 @@ public class FireSystemAgent extends Agent {
 		template.addServices(sdRoom);
 		try {
 			DFAgentDescription[] result = DFService.search(this, template);
-			//System.out.println("Found the following seller agents:");
 			serverAgents = new AID[result.length];
 			for (int i = 0; i < result.length; ++i) {
 				serverAgents[i] = result[i].getName();
@@ -99,7 +94,6 @@ public class FireSystemAgent extends Agent {
 			addBehaviour(new AchieveREInitiator(myAgent, requestFireStatusMessage) {
 
 				protected void handleInform(ACLMessage inform) {
-					//System.out.println("Agent "+inform.getSender().getName()+" successfully performed the requested action");
 					String messageContenut = inform.getContent();
 					System.out.println("Agente Gestore-Fuoco::::" + messageContenut);
 					if (messageContenut != null) {
@@ -158,7 +152,6 @@ public class FireSystemAgent extends Agent {
 				String roomName = roomIterator.next();
 				
 
-				//AID msgReceiver = new AID("Luce", AID.ISLOCALNAME);
 				ACLMessage requestBuzzerToggle = new ACLMessage(ACLMessage.REQUEST);
 				requestBuzzerToggle.setContent(""); // per far funzionare l'IF dopo
 				if (fireSystemOn) { //se e' attivo l'impianto antincendio
@@ -198,7 +191,6 @@ public class FireSystemAgent extends Agent {
 					requestBuzzerToggle.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
 					// We want to receive a reply in 10 secs
 					requestBuzzerToggle.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
-					//requestLightToggle.setContent("dummy-action");
 
 					addBehaviour(new AchieveREInitiator(myAgent, requestBuzzerToggle) {
 

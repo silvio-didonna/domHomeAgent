@@ -40,24 +40,17 @@ public class domHome {
 
         // Exit the JVM when there are no more containers around
         rt.setCloseVM(true);
-		//System.out.print("runtime created\n");
 
         // Create a default profile
         Profile profile = new ProfileImpl(null, 1200, null);
-		//System.out.print("profile created\n");
 
-        //System.out.println("Launching a whole in-process platform..."+profile);
         jade.wrapper.AgentContainer mainContainer = rt.createMainContainer(profile);
 
         // now set the default Profile to start a container
         ProfileImpl pContainer = new ProfileImpl(null, 1200, null);
-        //System.out.println("Launching the agent container ..."+pContainer);
 
         jade.wrapper.AgentContainer cont = rt.createAgentContainer(pContainer);
-		//System.out.println("Launching the agent container after ..."+pContainer);
 
-		//System.out.println("containers created");
-        //System.out.println("Launching the rma agent on the main container ...");
         if(!args[0].equalsIgnoreCase("/dev/ttyACM0")) { //se si usa il raspberry non visualizza l'interfaccia grafica jade (rma)
         AgentController rma = mainContainer.createNewAgent("rma", "jade.tools.rma.rma", new Object[0]);
         rma.start();
@@ -91,14 +84,7 @@ public class domHome {
         AgentController garageDoorAgent = cont.createNewAgent(garageDoorName, "security.GarageDoorAgent", null);
         AgentController buzzerAgent = cont.createNewAgent(buzzerName, "security.BuzzerAgent", null);
         AgentController sorterAgent = cont.createNewAgent(sorterName, "SorterAgent", null);
-        /*
-         try {
-         Thread.sleep(8000);
-         } catch (InterruptedException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-         }
-         */
+
         //Gestore seriale
         serialCommAgent.start();
 

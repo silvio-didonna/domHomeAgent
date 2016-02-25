@@ -1,12 +1,10 @@
 
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Vector;
 
 import internet.ThingSpeak;
 import jade.core.AID;
 import jade.core.Agent;
-import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
@@ -89,7 +87,6 @@ public class RoomAgent extends Agent {
                 private static final long serialVersionUID = 288442867080805012L;
 
                 protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
-                    //System.out.println("Agent "+getLocalName()+": REQUEST received from "+request.getSender().getName()+". Action is "+request.getContent());
                     if (request.getContent().equalsIgnoreCase("temperatura") || request.getContent().equalsIgnoreCase("lumen") || request.getContent().equalsIgnoreCase("fuoco") || request.getContent().equalsIgnoreCase("movimento") || request.getContent().equalsIgnoreCase("laser")) {
                         // We agree to perform the action.
                         ACLMessage agree = request.createReply();
@@ -152,14 +149,12 @@ public class RoomAgent extends Agent {
             ServiceDescription sdRoom = new ServiceDescription();
             sdRoom.setName(roomName + "-thermometer"); // ad es: salone-thermometer
             template.addServices(sdRoom);
-            thermometerAgents = null; // da modificare----------------------null
+            thermometerAgents = null; // 
             try {
                 DFAgentDescription[] result = DFService.search(myAgent, template);
-                //System.out.println("Found the following thermometer agents:");
                 thermometerAgents = new AID[result.length];
                 for (int i = 0; i < result.length; ++i) {
                     thermometerAgents[i] = result[i].getName();
-                    //System.out.println(thermometerAgents[i].getName());
 
                 }
             } catch (FIPAException fe) {
@@ -175,7 +170,6 @@ public class RoomAgent extends Agent {
             // We want to receive a reply in 10 secs
             requestTemperatureMessage.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
             requestTemperatureMessage.setContent("temperatura");
-            //requestTemperatureMessage.addReceiver(new AID("Termometro",AID.ISLOCALNAME));
             requestTemperatureMessage.addReceiver(thermometerAgents[0]);
 
             addBehaviour(new AchieveREInitiator(myAgent, requestTemperatureMessage) {
@@ -188,7 +182,6 @@ public class RoomAgent extends Agent {
                     String messageContenut = inform.getContent();
                     if (messageContenut != null) {
                         temperature = new Float(messageContenut);
-                        //System.out.println("Room-Temp::::" + messageContenut);
                     }
                 }
 
@@ -240,14 +233,12 @@ public class RoomAgent extends Agent {
             ServiceDescription sdRoom = new ServiceDescription();
             sdRoom.setName(roomName + "-light-sensor"); // ad es: salone-light-sensor
             template.addServices(sdRoom);
-            lightSensorAgents = null; // da modificare----------------------null
+            lightSensorAgents = null;
             try {
                 DFAgentDescription[] result = DFService.search(myAgent, template);
-                //System.out.println("Found the following light sensor agents:");
                 lightSensorAgents = new AID[result.length];
                 for (int i = 0; i < result.length; ++i) {
                     lightSensorAgents[i] = result[i].getName();
-                    //System.out.println(lightSensorAgents[i].getName());
 
                 }
             } catch (FIPAException fe) {
@@ -262,7 +253,6 @@ public class RoomAgent extends Agent {
             // We want to receive a reply in 10 secs
             requestTemperatureMessage.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
             requestTemperatureMessage.setContent("lumen");
-            //requestTemperatureMessage.addReceiver(new AID("Sensore-Luci",AID.ISLOCALNAME));
             requestTemperatureMessage.addReceiver(lightSensorAgents[0]);
 
             addBehaviour(new AchieveREInitiator(myAgent, requestTemperatureMessage) {
@@ -273,10 +263,8 @@ public class RoomAgent extends Agent {
 
                 protected void handleInform(ACLMessage inform) {
                     String messageContenut = inform.getContent();
-                    //System.out.println("Agentehall::::"+messageContenut);
                     if (messageContenut != null) {
                         lumens = Integer.parseInt(messageContenut);
-                        //System.out.println("Room-Lumen::::" + messageContenut);
                     }
                 }
 
@@ -317,20 +305,18 @@ public class RoomAgent extends Agent {
         protected void onTick() {
 
         	if(!fireSensorAgentsFounds) {
-            //ricerca agenti termometro
+            //ricerca agenti Fire
             String roomName = myAgent.getLocalName(); // nome agente stanza
             DFAgentDescription template = new DFAgentDescription();
             ServiceDescription sdRoom = new ServiceDescription();
             sdRoom.setName(roomName + "-flame"); // ad es: salone-flame
             template.addServices(sdRoom);
-            fireSensorAgents = null; // da modificare----------------------null
+            fireSensorAgents = null;
             try {
                 DFAgentDescription[] result = DFService.search(myAgent, template);
-                //System.out.println("Found the following fire sensor agents:");
                 fireSensorAgents = new AID[result.length];
                 for (int i = 0; i < result.length; ++i) {
                     fireSensorAgents[i] = result[i].getName();
-                    //System.out.println(fireSensorAgents[i].getName());
 
                 }
             } catch (FIPAException fe) {
@@ -345,7 +331,6 @@ public class RoomAgent extends Agent {
             // We want to receive a reply in 10 secs
             requestFireStatusMessage.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
             requestFireStatusMessage.setContent("fuoco");
-            //requestTemperatureMessage.addReceiver(new AID("Termometro",AID.ISLOCALNAME));
             requestFireStatusMessage.addReceiver(fireSensorAgents[0]);
 
             addBehaviour(new AchieveREInitiator(myAgent, requestFireStatusMessage) {
@@ -354,7 +339,6 @@ public class RoomAgent extends Agent {
                     String messageContenut = inform.getContent();
                     if (messageContenut != null) {
                         flame = Boolean.valueOf(inform.getContent());
-                        //System.out.println("Room-Flame::::" + messageContenut);
                     }
                 }
 
@@ -402,14 +386,12 @@ public class RoomAgent extends Agent {
             ServiceDescription sdRoom = new ServiceDescription();
             sdRoom.setName(roomName + "-motion"); // ad es: salone-motion
             template.addServices(sdRoom);
-            motionSensorAgents = null; // da modificare----------------------null
+            motionSensorAgents = null;
             try {
                 DFAgentDescription[] result = DFService.search(myAgent, template);
-                //System.out.println("Found the following fire sensor agents:");
                 motionSensorAgents = new AID[result.length];
                 for (int i = 0; i < result.length; ++i) {
                     motionSensorAgents[i] = result[i].getName();
-                    //System.out.println(fireSensorAgents[i].getName());
 
                 }
             } catch (FIPAException fe) {
@@ -424,7 +406,6 @@ public class RoomAgent extends Agent {
             // We want to receive a reply in 10 secs
             requestMotionStatusMessage.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
             requestMotionStatusMessage.setContent("movimento");
-            //requestTemperatureMessage.addReceiver(new AID("Termometro",AID.ISLOCALNAME));
             requestMotionStatusMessage.addReceiver(motionSensorAgents[0]);
 
             addBehaviour(new AchieveREInitiator(myAgent, requestMotionStatusMessage) {
@@ -433,7 +414,6 @@ public class RoomAgent extends Agent {
                     String messageContenut = inform.getContent();
                     if (messageContenut != null) {
                         motion = Boolean.valueOf(inform.getContent());
-                        //System.out.println("Room-Motion::::" + messageContenut);
                     }
                 }
 
@@ -474,20 +454,18 @@ public class RoomAgent extends Agent {
         protected void onTick() {
 
         	if(!laserSensorAgentsFounds) {
-            //ricerca agenti termometro
+            //ricerca agenti Laser
             String roomName = myAgent.getLocalName(); // nome agente stanza
             DFAgentDescription template = new DFAgentDescription();
             ServiceDescription sdRoom = new ServiceDescription();
             sdRoom.setName(roomName + "-laser"); // ad es: salone-laser
             template.addServices(sdRoom);
-            laserSensorAgents = null; // da modificare----------------------null
+            laserSensorAgents = null; 
             try {
                 DFAgentDescription[] result = DFService.search(myAgent, template);
-                //System.out.println("Found the following laser sensor agents:");
                 laserSensorAgents = new AID[result.length];
                 for (int i = 0; i < result.length; ++i) {
                     laserSensorAgents[i] = result[i].getName();
-                    //System.out.println(laserSensorAgents[i].getName());
 
                 }
             } catch (FIPAException fe) {
@@ -502,7 +480,6 @@ public class RoomAgent extends Agent {
             // We want to receive a reply in 10 secs
             requestLaserStatusMessage.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
             requestLaserStatusMessage.setContent("laser");
-            //requestTemperatureMessage.addReceiver(new AID("Termometro",AID.ISLOCALNAME));
             requestLaserStatusMessage.addReceiver(laserSensorAgents[0]);
 
             addBehaviour(new AchieveREInitiator(myAgent, requestLaserStatusMessage) {
@@ -511,7 +488,6 @@ public class RoomAgent extends Agent {
                     String messageContenut = inform.getContent();
                     if (messageContenut != null) {
                         laser = Boolean.valueOf(inform.getContent());
-                        //System.out.println("Room-Laser::::" + messageContenut);
                     }
                 }
 
@@ -558,7 +534,6 @@ public class RoomAgent extends Agent {
             if (tempOrLumen) {
                 //invia temperatura
             	//local:  http://192.168.1.111:3000/update?key=6NWTBO4M2J2BN00Y&field1=
-            	//https://api.thingspeak.com/update?api_key=OW7HWDZ4UTP04RT6&field1=
                 try {
                     ThingSpeak.getHTML("http://192.168.1.111:3000/update?key=6NWTBO4M2J2BN00Y&field1=" + String.valueOf(temperature));
                 } catch (Exception e) {
