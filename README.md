@@ -10,8 +10,13 @@ Tutte le librerie necessarie per l'esecuzione sono contenute nel progetto.
 Hardware utilizzato:
 - Arduino Uno
 - Proto Shield
-- Fotoresistore
+- Fotoresistore (luminosità ambientale e "ricevitore" laser)
 - Sensore di temperatura DS18B20
 - Scheda doppio relè (azionata a 5V)
-- ventola
-- led
+- ventilatore USB (Xiaomi)
+- luce led USB (Xiaomi)
+- led di simulazione caldaia
+- Sensore PIR (hc-sr501)
+- Sensore fiamme libere (generico cinese eBay)
+- Servomotori (finestra, persiana e box) (generici, dimensione standard)
+- Display OLED 1366 0.96"
