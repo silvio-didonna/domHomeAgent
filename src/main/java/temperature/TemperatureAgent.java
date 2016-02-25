@@ -141,6 +141,7 @@ public class TemperatureAgent extends Agent {
 					}
 				}
 
+				@SuppressWarnings("rawtypes")
 				protected void handleAllResultNotifications(Vector notifications) {
 					if (notifications.size() < nResponders) {
 						// Some responder didn't reply within the specified timeout
@@ -260,6 +261,7 @@ public class TemperatureAgent extends Agent {
 							}
 						}
 
+						@SuppressWarnings("rawtypes")
 						protected void handleAllResultNotifications(Vector notifications) {
 							if (notifications.size() < nResponders) {
 								// Some responder didn't reply within the specified timeout
@@ -384,6 +386,7 @@ public class TemperatureAgent extends Agent {
 							}
 						}
 
+						@SuppressWarnings("rawtypes")
 						protected void handleAllResultNotifications(Vector notifications) {
 							if (notifications.size() < nResponders) {
 								// Some responder didn't reply within the specified timeout
@@ -398,6 +401,10 @@ public class TemperatureAgent extends Agent {
 
 	private class SetBoiler extends TickerBehaviour {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -6171627906205684840L;
 		private int nResponders;
 
 		public SetBoiler(Agent a, long period) {
@@ -473,6 +480,11 @@ public class TemperatureAgent extends Agent {
 				addBehaviour(new AchieveREInitiator(myAgent, requestBoilerToggle) {
 
 
+					/**
+					 * 
+					 */
+					private static final long serialVersionUID = -5567800729859622896L;
+
 					protected void handleInform(ACLMessage inform) {
 						System.out.println("Agent " + inform.getSender().getName() + " send" + inform.getContent());
 						boilerOn=Boolean.valueOf(inform.getContent()); //DA MODIFICARE
@@ -497,6 +509,7 @@ public class TemperatureAgent extends Agent {
 						}
 					}
 
+					@SuppressWarnings("rawtypes")
 					protected void handleAllResultNotifications(Vector notifications) {
 						if (notifications.size() < nResponders) {
 							// Some responder didn't reply within the specified timeout
@@ -512,6 +525,11 @@ public class TemperatureAgent extends Agent {
 
 
 		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -5739165952080195784L;
+
 		Boolean makeAction(String messageFromGateway) {
 			String type;
 			String room;
@@ -564,6 +582,11 @@ public class TemperatureAgent extends Agent {
 			addBehaviour(new AchieveREResponder(myAgent, template) {
 
 
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1318753866067822127L;
+
 				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
 					//    if (request.getContent().equalsIgnoreCase("lumen") && currentLumen >= 0) {
 					// We agree to perform the action.
@@ -606,7 +629,8 @@ public class TemperatureAgent extends Agent {
         private Boolean windowStatus;
         
 
-        public CurrentStatusInRoom() {
+        @SuppressWarnings("unused")
+		public CurrentStatusInRoom() {
         	setCurrentTemperature(null);
             setRoomAgent(null);
             setFanOn(false);
@@ -631,26 +655,9 @@ public class TemperatureAgent extends Agent {
         public void setCurrentTemperature(Float currentTemperature) {
             this.currentTemperature = currentTemperature;
         }
-        
-        /*public Boolean getAutoTemperature() {
-            return autoTemperature;
-        }
 
-        public void setAutoTemperature(Boolean autoTemperature) {
-            this.autoTemperature = autoTemperature;
-        }
-        
-        public int getTemperatureLevel()
-        {
-        	return temperatureLevel;
-        }
-        
-        public void setTemperatureLevel(int temperatureLevel)
-        {
-        	this.temperatureLevel = temperatureLevel;
-        }*/
-
-        public AID getRoomAgent() {
+        @SuppressWarnings("unused")
+		public AID getRoomAgent() {
             return roomAgent;
         }
 

@@ -22,7 +22,11 @@ import jade.proto.AchieveREResponder;
 
 public class MotionSensorAgent extends Agent {
 
-    Boolean motionStatus;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 3043673966640627162L;
+	Boolean motionStatus;
 
     protected void setup() {
         motionStatus = false;
@@ -57,7 +61,12 @@ public class MotionSensorAgent extends Agent {
 
     private class MotionService extends OneShotBehaviour {
 
-        @Override
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 8059408911463667946L;
+
+		@Override
         public void action() {
 
             MessageTemplate template = MessageTemplate.and(
@@ -66,7 +75,12 @@ public class MotionSensorAgent extends Agent {
 
             addBehaviour(new AchieveREResponder(myAgent, template) {
 
-                protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
+                /**
+				 * 
+				 */
+				private static final long serialVersionUID = -9111634078852177667L;
+
+				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
                     if (request.getContent().equalsIgnoreCase("movimento")) {
                         // We agree to perform the action.
                         ACLMessage agree = request.createReply();
@@ -95,7 +109,12 @@ public class MotionSensorAgent extends Agent {
 
     private class CheckMotionStatus extends TickerBehaviour {
 
-        public CheckMotionStatus(Agent a, long period) {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -6559769873467446219L;
+
+		public CheckMotionStatus(Agent a, long period) {
             super(a, period);
             // TODO Auto-generated constructor stub
         }
@@ -113,7 +132,12 @@ public class MotionSensorAgent extends Agent {
 
             addBehaviour(new AchieveREInitiator(myAgent, requestMotionMessage) {
 
-                protected void handleInform(ACLMessage inform) {
+                /**
+				 * 
+				 */
+				private static final long serialVersionUID = -4021570335700307693L;
+
+				protected void handleInform(ACLMessage inform) {
                     String messageContenut = inform.getContent();
                     if (messageContenut != null) {
                         messageContenut = messageContenut.trim();
@@ -135,7 +159,8 @@ public class MotionSensorAgent extends Agent {
                     }
                 }
 
-                protected void handleAllResultNotifications(Vector notifications) {
+                @SuppressWarnings("rawtypes")
+				protected void handleAllResultNotifications(Vector notifications) {
                     //if (notifications.size() < nResponders) {
                     // Some responder didn't reply within the specified timeout
                     //System.out.println("Timeout expired: missing "+(nResponders - notifications.size())+" responses");

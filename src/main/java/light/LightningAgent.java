@@ -137,6 +137,7 @@ public class LightningAgent extends Agent {
 					}
 				}
 
+				@SuppressWarnings("rawtypes")
 				protected void handleAllResultNotifications(Vector notifications) {
 					if (notifications.size() < nResponders) {
 						// Some responder didn't reply within the specified timeout
@@ -255,6 +256,7 @@ public class LightningAgent extends Agent {
 							}
 						}
 
+						@SuppressWarnings("rawtypes")
 						protected void handleAllResultNotifications(Vector notifications) {
 							if (notifications.size() < nResponders) {
 								// Some responder didn't reply within the specified timeout
@@ -269,6 +271,10 @@ public class LightningAgent extends Agent {
 
 	private class SetShutter extends TickerBehaviour {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 229010266340118447L;
 		private int nResponders;
 
 		public SetShutter(Agent a, long period) {
@@ -345,6 +351,11 @@ public class LightningAgent extends Agent {
 					addBehaviour(new AchieveREInitiator(myAgent, requestShutterToggle) {
 
 
+						/**
+						 * 
+						 */
+						private static final long serialVersionUID = 3387645225169757766L;
+
 						protected void handleInform(ACLMessage inform) {
 							System.out.println("Agent " + inform.getSender().getName() + " send" + inform.getContent());
 							currentStatuses.get(roomName).setShutterStatus(Boolean.valueOf(inform.getContent()));
@@ -369,6 +380,7 @@ public class LightningAgent extends Agent {
 							}
 						}
 
+						@SuppressWarnings("rawtypes")
 						protected void handleAllResultNotifications(Vector notifications) {
 							if (notifications.size() < nResponders) {
 								// Some responder didn't reply within the specified timeout
@@ -490,6 +502,7 @@ public class LightningAgent extends Agent {
 		private Boolean shutterOpen;
 		private Boolean shutterStatus;
 
+		@SuppressWarnings("unused")
 		public CurrentStatusInRoom() {
 			currentLumen = 0;
 			roomAgent = null;
@@ -520,6 +533,7 @@ public class LightningAgent extends Agent {
 			this.currentLumen = currentLumen;
 		}
 
+		@SuppressWarnings("unused")
 		public AID getroomAgent() {
 			return roomAgent;
 		}

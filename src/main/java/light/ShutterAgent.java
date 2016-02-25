@@ -20,6 +20,10 @@ import jade.proto.AchieveREResponder;
 
 
 public class ShutterAgent extends Agent {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1075357619684999601L;
 	Boolean shutterStatus=false;
 	AID fromAgent;
 
@@ -48,6 +52,11 @@ public class ShutterAgent extends Agent {
 	private class toggleShutterFIPA extends OneShotBehaviour {
 
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 6202776421348797434L;
+
 		public void action() {
 
 			MessageTemplate template = MessageTemplate.and(
@@ -55,6 +64,11 @@ public class ShutterAgent extends Agent {
 					MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
 
 			AchieveREResponder arer = new AchieveREResponder(myAgent, template) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = -8498711853416846777L;
+
 				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
 					ACLMessage agree = request.createReply();
 					agree.setPerformative(ACLMessage.AGREE);
@@ -80,6 +94,11 @@ public class ShutterAgent extends Agent {
 
 	private class SendToSerialAgent extends AchieveREInitiator {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -7759965060174793538L;
+
 		public SendToSerialAgent(Agent a, ACLMessage msg) {
 			super(a, msg);
 			// TODO Auto-generated constructor stub
@@ -93,6 +112,7 @@ public class ShutterAgent extends Agent {
 		// Since we don't know what message to send to the responder
 		// when we construct this AchieveREInitiator, we redefine this 
 		// method to build the request on the fly
+		@SuppressWarnings({ "rawtypes", "unchecked" })
 		protected Vector prepareRequests(ACLMessage request) {
 			// Retrieve the incoming request from the DataStore
 			String incomingRequestKey = (String) ((AchieveREResponder) parent).REQUEST_KEY;
@@ -130,6 +150,7 @@ public class ShutterAgent extends Agent {
 			storeNotification(ACLMessage.FAILURE, null);
 		}
 
+		@SuppressWarnings("rawtypes")
 		protected void handleAllResultNotifications(Vector notifications) {
 			if (notifications.size() == 0) {
 				// Timeout

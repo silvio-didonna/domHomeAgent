@@ -63,7 +63,12 @@ public class FanAgent extends Agent {
 
             AchieveREResponder arer = new AchieveREResponder(myAgent, template) {
 
-                protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
+                /**
+				 * 
+				 */
+				private static final long serialVersionUID = -4085318445986402335L;
+
+				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
 
                     ACLMessage agree = request.createReply();
                     agree.setPerformative(ACLMessage.AGREE);
@@ -81,7 +86,12 @@ public class FanAgent extends Agent {
 
     private class SendToSerialAgent extends AchieveREInitiator {
 
-        public SendToSerialAgent(Agent a, ACLMessage msg) {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 4448995341737877009L;
+
+		public SendToSerialAgent(Agent a, ACLMessage msg) {
             super(a, msg);
             // TODO Auto-generated constructor stub
         }
@@ -94,7 +104,8 @@ public class FanAgent extends Agent {
 		// Since we don't know what message to send to the responder
         // when we construct this AchieveREInitiator, we redefine this 
         // method to build the request on the fly
-        protected Vector prepareRequests(ACLMessage request) {
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+		protected Vector prepareRequests(ACLMessage request) {
             // Retrieve the incoming request from the DataStore
             String incomingRequestKey = (String) ((AchieveREResponder) parent).REQUEST_KEY;
             ACLMessage incomingRequest = (ACLMessage) getDataStore().get(incomingRequestKey);
@@ -130,7 +141,8 @@ public class FanAgent extends Agent {
             storeNotification(ACLMessage.FAILURE, null);
         }
 
-        protected void handleAllResultNotifications(Vector notifications) {
+        @SuppressWarnings("rawtypes")
+		protected void handleAllResultNotifications(Vector notifications) {
             if (notifications.size() == 0) {
                 // Timeout
                 storeNotification(ACLMessage.FAILURE, null);

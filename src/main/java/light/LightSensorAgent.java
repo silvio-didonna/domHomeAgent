@@ -153,7 +153,8 @@ public class LightSensorAgent extends Agent {
                     }
                 }
 
-                protected void handleAllResultNotifications(Vector notifications) {
+                @SuppressWarnings("rawtypes")
+				protected void handleAllResultNotifications(Vector notifications) {
                     //if (notifications.size() < nResponders) {
                     // Some responder didn't reply within the specified timeout
                     //System.out.println("Timeout expired: missing "+(nResponders - notifications.size())+" responses");

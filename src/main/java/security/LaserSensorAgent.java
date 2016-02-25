@@ -5,7 +5,6 @@ import java.util.Vector;
 
 import jade.core.AID;
 import jade.core.Agent;
-import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
@@ -23,7 +22,11 @@ import jade.proto.AchieveREResponder;
 
 public class LaserSensorAgent extends Agent {
 
-    Boolean laserStatus;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8151165026940842914L;
+	Boolean laserStatus;
     int currentLumen;
 
     protected void setup() {
@@ -59,7 +62,12 @@ public class LaserSensorAgent extends Agent {
 
     private class LaserService extends OneShotBehaviour {
 
-        @Override
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -7194676557443506386L;
+
+		@Override
         public void action() {
 
             MessageTemplate template = MessageTemplate.and(
@@ -68,7 +76,12 @@ public class LaserSensorAgent extends Agent {
 
             addBehaviour(new AchieveREResponder(myAgent, template) {
 
-                protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
+                /**
+				 * 
+				 */
+				private static final long serialVersionUID = 1942183116484356529L;
+
+				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
                     if (request.getContent().equalsIgnoreCase("laser")) {
                         // We agree to perform the action.
                         ACLMessage agree = request.createReply();
@@ -97,7 +110,12 @@ public class LaserSensorAgent extends Agent {
 
     private class CheckLaserStatus extends TickerBehaviour {
 
-        public CheckLaserStatus(Agent a, long period) {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -5886813500382258596L;
+
+		public CheckLaserStatus(Agent a, long period) {
             super(a, period);
             // TODO Auto-generated constructor stub
         }
@@ -115,7 +133,12 @@ public class LaserSensorAgent extends Agent {
 
             addBehaviour(new AchieveREInitiator(myAgent, requestLaserMessage) {
 
-                protected void handleInform(ACLMessage inform) {
+                /**
+				 * 
+				 */
+				private static final long serialVersionUID = -5437904919062032600L;
+
+				protected void handleInform(ACLMessage inform) {
                     String messageContenut = inform.getContent();
                     if (messageContenut != null) {
                         messageContenut = messageContenut.trim();
@@ -145,7 +168,8 @@ public class LaserSensorAgent extends Agent {
                     }
                 }
 
-                protected void handleAllResultNotifications(Vector notifications) {
+                @SuppressWarnings("rawtypes")
+				protected void handleAllResultNotifications(Vector notifications) {
                     //if (notifications.size() < nResponders) {
                     // Some responder didn't reply within the specified timeout
                     //System.out.println("Timeout expired: missing "+(nResponders - notifications.size())+" responses");

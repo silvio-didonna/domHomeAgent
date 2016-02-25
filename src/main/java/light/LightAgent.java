@@ -66,6 +66,11 @@ public class LightAgent extends Agent {
 					MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
 
 			AchieveREResponder arer = new AchieveREResponder(myAgent, template) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = -7050519889478755265L;
+
 				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
 					ACLMessage agree = request.createReply();
 					agree.setPerformative(ACLMessage.AGREE);
@@ -91,6 +96,11 @@ public class LightAgent extends Agent {
 
 	private class SendToSerialAgent extends AchieveREInitiator {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4883198982181941486L;
+
 		public SendToSerialAgent(Agent a, ACLMessage msg) {
 			super(a, msg);
 			// TODO Auto-generated constructor stub
@@ -104,6 +114,7 @@ public class LightAgent extends Agent {
 		// Since we don't know what message to send to the responder
 		// when we construct this AchieveREInitiator, we redefine this 
 		// method to build the request on the fly
+		@SuppressWarnings({ "rawtypes", "unchecked" })
 		protected Vector prepareRequests(ACLMessage request) {
 			// Retrieve the incoming request from the DataStore
 			String incomingRequestKey = (String) ((AchieveREResponder) parent).REQUEST_KEY;
@@ -141,6 +152,7 @@ public class LightAgent extends Agent {
 			storeNotification(ACLMessage.FAILURE, null);
 		}
 
+		@SuppressWarnings("rawtypes")
 		protected void handleAllResultNotifications(Vector notifications) {
 			if (notifications.size() == 0) {
 				// Timeout
@@ -166,33 +178,6 @@ public class LightAgent extends Agent {
 			String notificationkey = (String) ((AchieveREResponder) parent).RESULT_NOTIFICATION_KEY;
 			getDataStore().put(notificationkey, notification);
 		}
-	}
-
-
-
-	private class checkLightStatus extends OneShotBehaviour {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -2794051229003161225L;
-
-		@Override
-		public void action() {
-			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
-			ACLMessage msgFromSerial = myAgent.blockingReceive(mt); // ATTENZIONE, e' una BLOCKING
-			if (msgFromSerial!=null) {
-
-				String messageContenut=msgFromSerial.getContent();
-				messageContenut=messageContenut.trim();
-				if (messageContenut!=null)
-					lightStatus = Boolean.valueOf(messageContenut);
-				System.out.println("AgenteLuce::::"+lightStatus);
-			}
-
-
-		}
-
 	}
 
 	protected void takeDown() {

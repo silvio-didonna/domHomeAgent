@@ -26,6 +26,10 @@ import jade.proto.AchieveREResponder;
 
 public class AntitheftAgent extends Agent {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8265648895686215747L;
 	private AID[] serverAgents;
 	Map <String,CurrentStatusInRoom> currentStatuses = new HashMap<String,CurrentStatusInRoom>();
 	String responseToSorter = "";
@@ -71,6 +75,10 @@ public class AntitheftAgent extends Agent {
 
 	private class RequestCurrentMotionStatuses extends TickerBehaviour {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -5265734910038328073L;
 		private int nResponders;
 
 		public RequestCurrentMotionStatuses(Agent a, long period) {
@@ -93,6 +101,11 @@ public class AntitheftAgent extends Agent {
 			requestMotionStatusMessage.setContent("movimento");
 
 			addBehaviour(new AchieveREInitiator(myAgent, requestMotionStatusMessage) {
+
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 4205505795217915285L;
 
 				protected void handleInform(ACLMessage inform) {
 					String messageContenut = inform.getContent();
@@ -126,6 +139,7 @@ public class AntitheftAgent extends Agent {
 					}
 				}
 
+				@SuppressWarnings("rawtypes")
 				protected void handleAllResultNotifications(Vector notifications) {
 					if (notifications.size() < nResponders) {
 						// Some responder didn't reply within the specified timeout
@@ -139,6 +153,10 @@ public class AntitheftAgent extends Agent {
 
 	private class RequestCurrentLaserStatuses extends TickerBehaviour {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -1157080007953026085L;
 		private int nResponders;
 
 		public RequestCurrentLaserStatuses(Agent a, long period) {
@@ -161,6 +179,11 @@ public class AntitheftAgent extends Agent {
 			requestLaserStatusMessage.setContent("laser");
 
 			addBehaviour(new AchieveREInitiator(myAgent, requestLaserStatusMessage) {
+
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = -9041616787613540819L;
 
 				protected void handleInform(ACLMessage inform) {
 					String messageContenut = inform.getContent();
@@ -193,6 +216,7 @@ public class AntitheftAgent extends Agent {
 					}
 				}
 
+				@SuppressWarnings("rawtypes")
 				protected void handleAllResultNotifications(Vector notifications) {
 					if (notifications.size() < nResponders) {
 						// Some responder didn't reply within the specified timeout
@@ -205,6 +229,10 @@ public class AntitheftAgent extends Agent {
 	}
 
 	private class SetBuzzer extends TickerBehaviour {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 6445965918941311563L;
 		private int nResponders;
 
 		public SetBuzzer(Agent a, long period) {
@@ -262,6 +290,11 @@ public class AntitheftAgent extends Agent {
 					addBehaviour(new AchieveREInitiator(myAgent, requestBuzzerToggle) {
 
 
+						/**
+						 * 
+						 */
+						private static final long serialVersionUID = 8763420545085232413L;
+
 						protected void handleInform(ACLMessage inform) {
 							System.out.println("Agent " + inform.getSender().getName() + " send" + inform.getContent());
 							buzzerStatus = Boolean.valueOf(inform.getContent());
@@ -286,6 +319,7 @@ public class AntitheftAgent extends Agent {
 							}
 						}
 
+						@SuppressWarnings("rawtypes")
 						protected void handleAllResultNotifications(Vector notifications) {
 							if (notifications.size() < nResponders) {
 								// Some responder didn't reply within the specified timeout
@@ -308,7 +342,9 @@ public class AntitheftAgent extends Agent {
 
 		Boolean makeAction(String messageFromGateway) {
 			String type;
+			@SuppressWarnings("unused")
 			String room;
+			@SuppressWarnings("unused")
 			String value;
 
 
@@ -381,6 +417,7 @@ public class AntitheftAgent extends Agent {
 		private Boolean currentLaserStatus;
 		private AID roomAgent;
 
+		@SuppressWarnings("unused")
 		public CurrentStatusInRoom() {
 			currentMotionStatus = null;
 			currentLaserStatus = null;
@@ -390,12 +427,6 @@ public class AntitheftAgent extends Agent {
 
 		public CurrentStatusInRoom(AID roomAgent) {
 			setCurrentMotionStatus(null);
-			setRoomAgent(roomAgent);
-			//fanOn = false;
-		}
-
-		public CurrentStatusInRoom(AID roomAgent, Boolean currentMotionStatus) {
-			setCurrentMotionStatus(currentMotionStatus);
 			setRoomAgent(roomAgent);
 			//fanOn = false;
 		}
@@ -416,6 +447,7 @@ public class AntitheftAgent extends Agent {
 			this.currentLaserStatus = currentLaserStatus;
 		}
 
+		@SuppressWarnings("unused")
 		public AID getRoomAgent() {
 			return roomAgent;
 		}

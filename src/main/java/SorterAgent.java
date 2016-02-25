@@ -46,6 +46,11 @@ public class SorterAgent extends Agent {
 	private class SortGatewayMessages extends OneShotBehaviour {
 
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -5390729657983481551L;
+
 		public void action() {
 
 			MessageTemplate template = MessageTemplate.and(
@@ -53,6 +58,11 @@ public class SorterAgent extends Agent {
 					MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
 
 			AchieveREResponder arer = new AchieveREResponder(myAgent, template) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 5393781698797789279L;
+
 				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
 					ACLMessage agree = request.createReply();
 					agree.setPerformative(ACLMessage.AGREE);
@@ -79,6 +89,11 @@ public class SorterAgent extends Agent {
 
 
 	private class SendToAgent extends AchieveREInitiator {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 3599739260926108962L;
 
 		public SendToAgent(Agent a, ACLMessage msg) {
 			super(a, msg);
@@ -150,6 +165,7 @@ public class SorterAgent extends Agent {
 		// Since we don't know what message to send to the responder
 		// when we construct this AchieveREInitiator, we redefine this 
 		// method to build the request on the fly
+		@SuppressWarnings({ "rawtypes", "unchecked" })
 		protected Vector prepareRequests(ACLMessage request) {
 			// Retrieve the incoming request from the DataStore
 			String incomingRequestKey = (String) ((AchieveREResponder) parent).REQUEST_KEY;
@@ -187,6 +203,7 @@ public class SorterAgent extends Agent {
 			storeNotification(ACLMessage.FAILURE, null);
 		}
 
+		@SuppressWarnings("rawtypes")
 		protected void handleAllResultNotifications(Vector notifications) {
 			if (notifications.size() == 0) {
 				// Timeout

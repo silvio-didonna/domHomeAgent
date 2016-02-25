@@ -20,6 +20,10 @@ import jade.proto.AchieveREResponder;
 
 
 public class BuzzerAgent extends Agent {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6854127842066460387L;
 	Boolean buzzerStatus=false;
 	AID fromAgent;
 
@@ -47,6 +51,11 @@ public class BuzzerAgent extends Agent {
 
 
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -3451594998173719730L;
+
 		public void action() {
 
 			MessageTemplate template = MessageTemplate.and(
@@ -54,6 +63,11 @@ public class BuzzerAgent extends Agent {
 					MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
 
 			AchieveREResponder arer = new AchieveREResponder(myAgent, template) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 4811188151004689475L;
+
 				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
 					ACLMessage agree = request.createReply();
 					agree.setPerformative(ACLMessage.AGREE);
@@ -79,6 +93,11 @@ public class BuzzerAgent extends Agent {
 
 	private class SendToSerialAgent extends AchieveREInitiator {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -2935347200184543024L;
+
 		public SendToSerialAgent(Agent a, ACLMessage msg) {
 			super(a, msg);
 			// TODO Auto-generated constructor stub
@@ -92,6 +111,7 @@ public class BuzzerAgent extends Agent {
 		// Since we don't know what message to send to the responder
 		// when we construct this AchieveREInitiator, we redefine this 
 		// method to build the request on the fly
+		@SuppressWarnings({ "rawtypes", "unchecked" })
 		protected Vector prepareRequests(ACLMessage request) {
 			// Retrieve the incoming request from the DataStore
 			String incomingRequestKey = (String) ((AchieveREResponder) parent).REQUEST_KEY;
@@ -129,6 +149,7 @@ public class BuzzerAgent extends Agent {
 			storeNotification(ACLMessage.FAILURE, null);
 		}
 
+		@SuppressWarnings("rawtypes")
 		protected void handleAllResultNotifications(Vector notifications) {
 			if (notifications.size() == 0) {
 				// Timeout

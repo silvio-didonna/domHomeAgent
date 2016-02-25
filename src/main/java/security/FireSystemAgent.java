@@ -26,6 +26,10 @@ import jade.proto.AchieveREResponder;
 
 public class FireSystemAgent extends Agent {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3455304833824433643L;
 	private AID[] serverAgents;
 	Map <String,CurrentStatusInRoom> currentStatuses = new HashMap<String,CurrentStatusInRoom>();
 	String responseToSorter = "";
@@ -70,6 +74,10 @@ public class FireSystemAgent extends Agent {
 
 	private class RequestCurrentFireStatuses extends TickerBehaviour {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -9221635360311975788L;
 		private int nResponders;
 
 		public RequestCurrentFireStatuses(Agent a, long period) {
@@ -92,6 +100,11 @@ public class FireSystemAgent extends Agent {
 			requestFireStatusMessage.setContent("fuoco");
 
 			addBehaviour(new AchieveREInitiator(myAgent, requestFireStatusMessage) {
+
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1832699550589541628L;
 
 				protected void handleInform(ACLMessage inform) {
 					String messageContenut = inform.getContent();
@@ -124,6 +137,7 @@ public class FireSystemAgent extends Agent {
 					}
 				}
 
+				@SuppressWarnings("rawtypes")
 				protected void handleAllResultNotifications(Vector notifications) {
 					if (notifications.size() < nResponders) {
 						// Some responder didn't reply within the specified timeout
@@ -136,6 +150,10 @@ public class FireSystemAgent extends Agent {
 	}
 
 	private class SetBuzzer extends TickerBehaviour {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 933352110874034028L;
 		private int nResponders;
 
 		public SetBuzzer(Agent a, long period) {
@@ -195,6 +213,11 @@ public class FireSystemAgent extends Agent {
 					addBehaviour(new AchieveREInitiator(myAgent, requestBuzzerToggle) {
 
 
+						/**
+						 * 
+						 */
+						private static final long serialVersionUID = -1956953211400540996L;
+
 						protected void handleInform(ACLMessage inform) {
 							System.out.println("Agent " + inform.getSender().getName() + " send" + inform.getContent());
 							buzzerStatus = Boolean.valueOf(inform.getContent());
@@ -219,6 +242,7 @@ public class FireSystemAgent extends Agent {
 							}
 						}
 
+						@SuppressWarnings("rawtypes")
 						protected void handleAllResultNotifications(Vector notifications) {
 							if (notifications.size() < nResponders) {
 								// Some responder didn't reply within the specified timeout
@@ -241,7 +265,9 @@ public class FireSystemAgent extends Agent {
 
 		Boolean makeAction(String messageFromGateway) {
 			String type;
+			@SuppressWarnings("unused")
 			String room;
+			@SuppressWarnings("unused")
 			String value;
 
 
@@ -313,6 +339,7 @@ public class FireSystemAgent extends Agent {
 		private Boolean currentFireStatus;
 		private AID roomAgent;
 
+		@SuppressWarnings("unused")
 		public CurrentStatusInRoom() {
 			setCurrentFireStatus(null);
 			setRoomAgent(null);
@@ -331,6 +358,7 @@ public class FireSystemAgent extends Agent {
 			this.currentFireStatus = currentFireStatus;
 		}
 
+		@SuppressWarnings("unused")
 		public AID getRoomAgent() {
 			return roomAgent;
 		}

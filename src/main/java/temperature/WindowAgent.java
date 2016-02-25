@@ -85,7 +85,12 @@ public class WindowAgent extends Agent {
 
     private class SendToSerialAgent extends AchieveREInitiator {
 
-        public SendToSerialAgent(Agent a, ACLMessage msg) {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -6413735650983519988L;
+
+		public SendToSerialAgent(Agent a, ACLMessage msg) {
             super(a, msg);
             // TODO Auto-generated constructor stub
         }
@@ -98,7 +103,8 @@ public class WindowAgent extends Agent {
 		// Since we don't know what message to send to the responder
         // when we construct this AchieveREInitiator, we redefine this 
         // method to build the request on the fly
-        protected Vector prepareRequests(ACLMessage request) {
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+		protected Vector prepareRequests(ACLMessage request) {
             // Retrieve the incoming request from the DataStore
             String incomingRequestKey = (String) ((AchieveREResponder) parent).REQUEST_KEY;
             ACLMessage incomingRequest = (ACLMessage) getDataStore().get(incomingRequestKey);
@@ -134,7 +140,8 @@ public class WindowAgent extends Agent {
             storeNotification(ACLMessage.FAILURE, null);
         }
 
-        protected void handleAllResultNotifications(Vector notifications) {
+        @SuppressWarnings("rawtypes")
+		protected void handleAllResultNotifications(Vector notifications) {
             if (notifications.size() == 0) {
                 // Timeout
                 storeNotification(ACLMessage.FAILURE, null);

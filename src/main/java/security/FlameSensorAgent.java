@@ -22,7 +22,11 @@ import jade.proto.AchieveREResponder;
 
 public class FlameSensorAgent extends Agent {
 
-    Boolean fireStatus;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -227528781846910405L;
+	Boolean fireStatus;
 
     protected void setup() {
         fireStatus = false;
@@ -57,7 +61,12 @@ public class FlameSensorAgent extends Agent {
 
     private class FireService extends OneShotBehaviour {
 
-        @Override
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 9136395312269290252L;
+
+		@Override
         public void action() {
 
             MessageTemplate template = MessageTemplate.and(
@@ -66,7 +75,12 @@ public class FlameSensorAgent extends Agent {
 
             addBehaviour(new AchieveREResponder(myAgent, template) {
 
-                protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
+                /**
+				 * 
+				 */
+				private static final long serialVersionUID = 1130304478322551959L;
+
+				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
                     if (request.getContent().equalsIgnoreCase("fuoco")) {
                         // We agree to perform the action.
                         ACLMessage agree = request.createReply();
@@ -95,7 +109,12 @@ public class FlameSensorAgent extends Agent {
 
     private class CheckFireStatus extends TickerBehaviour {
 
-        public CheckFireStatus(Agent a, long period) {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -508591760470206596L;
+
+		public CheckFireStatus(Agent a, long period) {
             super(a, period);
             // TODO Auto-generated constructor stub
         }
@@ -113,7 +132,12 @@ public class FlameSensorAgent extends Agent {
 
             addBehaviour(new AchieveREInitiator(myAgent, requestFireMessage) {
 
-                protected void handleInform(ACLMessage inform) {
+                /**
+				 * 
+				 */
+				private static final long serialVersionUID = -5149668682850047614L;
+
+				protected void handleInform(ACLMessage inform) {
                     String messageContenut = inform.getContent();
                     if (messageContenut != null) {
                         messageContenut = messageContenut.trim();
@@ -135,7 +159,8 @@ public class FlameSensorAgent extends Agent {
                     }
                 }
 
-                protected void handleAllResultNotifications(Vector notifications) {
+                @SuppressWarnings("rawtypes")
+				protected void handleAllResultNotifications(Vector notifications) {
                     //if (notifications.size() < nResponders) {
                     // Some responder didn't reply within the specified timeout
                     //System.out.println("Timeout expired: missing "+(nResponders - notifications.size())+" responses");

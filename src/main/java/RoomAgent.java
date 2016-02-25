@@ -199,7 +199,8 @@ public class RoomAgent extends Agent {
                     }
                 }
 
-                protected void handleAllResultNotifications(Vector notifications) {
+                @SuppressWarnings("rawtypes")
+				protected void handleAllResultNotifications(Vector notifications) {
                     //if (notifications.size() < nResponders) {
                     // Some responder didn't reply within the specified timeout
                     //System.out.println("Timeout expired: missing "+(nResponders - notifications.size())+" responses");
@@ -282,7 +283,8 @@ public class RoomAgent extends Agent {
                     }
                 }
 
-                protected void handleAllResultNotifications(Vector notifications) {
+                @SuppressWarnings("rawtypes")
+				protected void handleAllResultNotifications(Vector notifications) {
                     //if (notifications.size() < nResponders) {
                     // Some responder didn't reply within the specified timeout
                     //System.out.println("Timeout expired: missing "+(nResponders - notifications.size())+" responses");
@@ -296,7 +298,12 @@ public class RoomAgent extends Agent {
 
     private class GetCurrentFireStatus extends TickerBehaviour {
 
-        public GetCurrentFireStatus(Agent a, long period) {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 5994753169747991940L;
+
+		public GetCurrentFireStatus(Agent a, long period) {
             super(a, period);
             // TODO Auto-generated constructor stub
         }
@@ -335,7 +342,12 @@ public class RoomAgent extends Agent {
 
             addBehaviour(new AchieveREInitiator(myAgent, requestFireStatusMessage) {
 
-                protected void handleInform(ACLMessage inform) {
+                /**
+				 * 
+				 */
+				private static final long serialVersionUID = 7442878325482249932L;
+
+				protected void handleInform(ACLMessage inform) {
                     String messageContenut = inform.getContent();
                     if (messageContenut != null) {
                         flame = Boolean.valueOf(inform.getContent());
@@ -356,7 +368,8 @@ public class RoomAgent extends Agent {
                     }
                 }
 
-                protected void handleAllResultNotifications(Vector notifications) {
+                @SuppressWarnings("rawtypes")
+				protected void handleAllResultNotifications(Vector notifications) {
                     //if (notifications.size() < nResponders) {
                     // Some responder didn't reply within the specified timeout
                     //System.out.println("Timeout expired: missing "+(nResponders - notifications.size())+" responses");
@@ -371,7 +384,12 @@ public class RoomAgent extends Agent {
     
     private class GetCurrentMotionStatus extends TickerBehaviour {
 
-        public GetCurrentMotionStatus(Agent a, long period) {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -1681557847659604730L;
+
+		public GetCurrentMotionStatus(Agent a, long period) {
             super(a, period);
             // TODO Auto-generated constructor stub
         }
@@ -410,7 +428,12 @@ public class RoomAgent extends Agent {
 
             addBehaviour(new AchieveREInitiator(myAgent, requestMotionStatusMessage) {
 
-                protected void handleInform(ACLMessage inform) {
+                /**
+				 * 
+				 */
+				private static final long serialVersionUID = -3810750059739447954L;
+
+				protected void handleInform(ACLMessage inform) {
                     String messageContenut = inform.getContent();
                     if (messageContenut != null) {
                         motion = Boolean.valueOf(inform.getContent());
@@ -431,7 +454,8 @@ public class RoomAgent extends Agent {
                     }
                 }
 
-                protected void handleAllResultNotifications(Vector notifications) {
+                @SuppressWarnings("rawtypes")
+				protected void handleAllResultNotifications(Vector notifications) {
                     //if (notifications.size() < nResponders) {
                     // Some responder didn't reply within the specified timeout
                     //System.out.println("Timeout expired: missing "+(nResponders - notifications.size())+" responses");
@@ -445,7 +469,12 @@ public class RoomAgent extends Agent {
     
     private class GetCurrentLaserStatus extends TickerBehaviour {
 
-        public GetCurrentLaserStatus(Agent a, long period) {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 8064953200930205432L;
+
+		public GetCurrentLaserStatus(Agent a, long period) {
             super(a, period);
             // TODO Auto-generated constructor stub
         }
@@ -484,7 +513,12 @@ public class RoomAgent extends Agent {
 
             addBehaviour(new AchieveREInitiator(myAgent, requestLaserStatusMessage) {
 
-                protected void handleInform(ACLMessage inform) {
+                /**
+				 * 
+				 */
+				private static final long serialVersionUID = 3001926471827184126L;
+
+				protected void handleInform(ACLMessage inform) {
                     String messageContenut = inform.getContent();
                     if (messageContenut != null) {
                         laser = Boolean.valueOf(inform.getContent());
@@ -505,7 +539,8 @@ public class RoomAgent extends Agent {
                     }
                 }
 
-                protected void handleAllResultNotifications(Vector notifications) {
+                @SuppressWarnings("rawtypes")
+				protected void handleAllResultNotifications(Vector notifications) {
                     //if (notifications.size() < nResponders) {
                     // Some responder didn't reply within the specified timeout
                     //System.out.println("Timeout expired: missing "+(nResponders - notifications.size())+" responses");

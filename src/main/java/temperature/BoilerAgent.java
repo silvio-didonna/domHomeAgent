@@ -20,7 +20,11 @@ import jade.proto.AchieveREResponder;
 
 public class BoilerAgent extends Agent {
 
-    Boolean boilerStatus = true; // per non far spegnere il boiler dopo il primo ciclo
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -2748724726119121138L;
+	Boolean boilerStatus = true; // per non far spegnere il boiler dopo il primo ciclo
 
     protected void setup() {
 
@@ -43,7 +47,12 @@ public class BoilerAgent extends Agent {
 
     private class toggleBoilerFIPA extends OneShotBehaviour {
 
-        public void action() {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -1301452426684785089L;
+
+		public void action() {
 
             MessageTemplate template = MessageTemplate.and(
                     MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
@@ -51,7 +60,12 @@ public class BoilerAgent extends Agent {
 
             AchieveREResponder arer = new AchieveREResponder(myAgent, template) {
 
-                protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
+                /**
+				 * 
+				 */
+				private static final long serialVersionUID = 3817530540960379298L;
+
+				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
 
                     ACLMessage agree = request.createReply();
                     agree.setPerformative(ACLMessage.AGREE);
@@ -69,7 +83,12 @@ public class BoilerAgent extends Agent {
 
     private class SendToSerialAgent extends AchieveREInitiator {
 
-        public SendToSerialAgent(Agent a, ACLMessage msg) {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -6849122079833184055L;
+
+		public SendToSerialAgent(Agent a, ACLMessage msg) {
             super(a, msg);
             // TODO Auto-generated constructor stub
         }
@@ -82,7 +101,8 @@ public class BoilerAgent extends Agent {
 		// Since we don't know what message to send to the responder
         // when we construct this AchieveREInitiator, we redefine this 
         // method to build the request on the fly
-        protected Vector prepareRequests(ACLMessage request) {
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+		protected Vector prepareRequests(ACLMessage request) {
             // Retrieve the incoming request from the DataStore
             String incomingRequestKey = (String) ((AchieveREResponder) parent).REQUEST_KEY;
             ACLMessage incomingRequest = (ACLMessage) getDataStore().get(incomingRequestKey);
@@ -118,7 +138,8 @@ public class BoilerAgent extends Agent {
             storeNotification(ACLMessage.FAILURE, null);
         }
 
-        protected void handleAllResultNotifications(Vector notifications) {
+        @SuppressWarnings("rawtypes")
+		protected void handleAllResultNotifications(Vector notifications) {
             if (notifications.size() == 0) {
                 // Timeout
                 storeNotification(ACLMessage.FAILURE, null);

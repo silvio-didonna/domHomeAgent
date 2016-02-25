@@ -20,6 +20,10 @@ import jade.proto.AchieveREResponder;
 
 
 public class GarageDoorAgent extends Agent {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6093776303961978091L;
 	Boolean garageDoorStatus=false;
 
 	protected void setup() {
@@ -44,6 +48,11 @@ public class GarageDoorAgent extends Agent {
 	private class toggleGarageDoor extends OneShotBehaviour {
 
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 6287072221546611883L;
+
 		public void action() {
 
 			MessageTemplate template = MessageTemplate.and(
@@ -51,6 +60,11 @@ public class GarageDoorAgent extends Agent {
 					MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
 
 			AchieveREResponder arer = new AchieveREResponder(myAgent, template) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 3131070878617571922L;
+
 				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
 					ACLMessage agree = request.createReply();
 					agree.setPerformative(ACLMessage.AGREE);
@@ -76,6 +90,11 @@ public class GarageDoorAgent extends Agent {
 
 	private class SendToSerialAgent extends AchieveREInitiator {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -6013432496173627878L;
+
 		public SendToSerialAgent(Agent a, ACLMessage msg) {
 			super(a, msg);
 			// TODO Auto-generated constructor stub
@@ -89,6 +108,7 @@ public class GarageDoorAgent extends Agent {
 		// Since we don't know what message to send to the responder
 		// when we construct this AchieveREInitiator, we redefine this 
 		// method to build the request on the fly
+		@SuppressWarnings({ "rawtypes", "unchecked" })
 		protected Vector prepareRequests(ACLMessage request) {
 			// Retrieve the incoming request from the DataStore
 			String incomingRequestKey = (String) ((AchieveREResponder) parent).REQUEST_KEY;
@@ -126,6 +146,7 @@ public class GarageDoorAgent extends Agent {
 			storeNotification(ACLMessage.FAILURE, null);
 		}
 
+		@SuppressWarnings("rawtypes")
 		protected void handleAllResultNotifications(Vector notifications) {
 			if (notifications.size() == 0) {
 				// Timeout
